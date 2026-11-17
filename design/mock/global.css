@@ -1,0 +1,280 @@
+/* App-level additions to organic.css. The first block is the shared part of
+   clockwheel's global.css (HOUSE-STYLE §1); its edit-in-place boxes,
+   hamburger menu and Clockmaker-only rules are left out because Hindcaster
+   has no boxes to type in and only one screen. The rest is the page, as in
+   the approved mock-up (design/mock-page.html). */
+
+.mono { font-variant-numeric: tabular-nums; }
+
+/* Hidden on screen, shown only in a printed page — the opposite of
+   [data-noprint]. */
+.print-only { display: none; }
+
+body { margin: 0; background: var(--color-bg); }
+
+.nav { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3) var(--space-6); background: var(--color-surface); }
+.col { max-width: 1100px; margin: 0 auto; }
+.screen { padding: 0 var(--space-6) var(--space-6); }
+.page-head { padding: var(--space-6) 0 var(--space-4); }
+.page-head h2 { margin: 2px 0 0; }
+.muted { color: var(--color-neutral-700); }
+.small { font-size: 12.5px; }
+
+.roundup { padding: var(--space-6); margin-bottom: var(--space-6); }
+.roundup p { margin: 0 0 var(--space-2); font-size: 17px; line-height: 1.5; }
+.roundup p:last-child { margin-bottom: 0; }
+.roundup b { font-weight: 700; }
+.warn { color: var(--color-accent-700); font-weight: 600; }
+
+.section-head { display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap; margin: 0 0 var(--space-2); }
+.section-head h3 { margin: 0; font-size: 20px; }
+.badge { font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; padding: 3px 9px; }
+.badge-final { background: var(--color-accent-2-100); color: var(--color-accent-2-800); }
+.badge-incomplete { background: var(--color-accent-100); color: var(--color-accent-800); }
+
+.figures { width: 100%; table-layout: fixed; }
+.figures td, .figures th { vertical-align: top; }
+/* The window on its own line under each heading, so "9am–9pm" never splits. */
+.figures th .muted { display: block; white-space: nowrap; }
+.big { font-size: 20px; font-weight: 700; }
+.note { font-size: 12.5px; color: var(--color-neutral-700); margin-top: 2px; }
+/* The source lines in the same style as the notes (John, 20 October, option C: his
+   judgement on the Met Office terms' "prominent" acknowledgement, clause 2.6). */
+.data-credit { margin: var(--space-2) 0 0; font-size: 12.5px; color: var(--color-neutral-700); }
+/* Each source in its own section, with where it comes from at the foot (John, 18 October). */
+.source { margin-bottom: var(--space-8); }
+.source .rain { margin: 0; }
+.data-credit-top { margin: 0 0 var(--space-2); }
+.clock-note { margin: 0 0 var(--space-2); }
+/* The evening update's warning in the rain section, in the type of the summary's warning (John, 22 October). */
+.rain-warn { margin: 0 0 var(--space-3); font-size: 17px; line-height: 1.5; }
+.footer-link { color: var(--color-accent-700); text-decoration: underline; }
+.nodata td { color: var(--color-neutral-700); font-style: italic; }
+
+/* Phone: one card per station, with a clear gap between them (John,
+   17 October: in the mock-up they ran together). */
+.station-cards { display: flex; flex-direction: column; gap: var(--space-4); }
+.station-card { padding: var(--space-4); box-shadow: var(--shadow-sm); }
+.station-card h4 { margin: 0 0 var(--space-2); font-size: 18px; }
+.station-card .area { font-family: var(--font-body, 'Figtree'); font-size: 13px; color: var(--color-neutral-700); }
+/* Labels in a fixed column, every entry starting at the same edge (John, 20 October, option B). */
+.station-card .row { display: grid; grid-template-columns: 92px 1fr; gap: var(--space-3); padding: 6px 0; border-top: 1px solid var(--color-divider); }
+.station-card .row:first-of-type { border-top: 0; }
+.station-card .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-neutral-700); padding-top: 4px; flex: none; }
+.station-card .val { text-align: left; min-width: 0; }
+
+.rain { padding: var(--space-4) var(--space-6); margin: var(--space-6) 0; flex-direction: row; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-6); }
+.rain > div { flex: 0 1 auto; min-width: 0; }
+.rain .big { font-size: 32px; font-family: var(--font-heading); font-weight: 400; }
+
+.about { padding: var(--space-6); margin-top: var(--space-6); }
+.about h3 { margin: 0 0 var(--space-3); font-size: 20px; }
+.about dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px var(--space-4); margin: 0 0 var(--space-3); }
+.about dt { font-weight: 600; }
+.about dd { margin: 0; }
+.about p { margin: 0 0 var(--space-2); font-size: 14px; }
+
+.footer-notice { margin-top: 64px; padding-top: var(--space-3); border-top: 1px solid var(--color-divider); font-size: 12px; line-height: 1.6; color: var(--color-neutral-700); text-align: center; }
+
+@media (max-width: 720px) {
+  .nav { padding: var(--space-3) var(--space-4); }
+  .screen { padding: 0 var(--space-4) var(--space-6); }
+  .roundup { padding: var(--space-4); }
+  .roundup p { font-size: 16px; }
+  .rain { padding: var(--space-4); gap: var(--space-2) var(--space-3); }
+  .about { padding: var(--space-4); }
+  .about dl { grid-template-columns: 1fr; gap: 0; }
+  .about dd { margin-bottom: var(--space-2); }
+}
+
+@media print {
+  @page { size: A4 portrait; margin: 12mm; }
+  html, body { background: #fff; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  [data-noprint] { display: none !important; }
+  .print-only { display: block; }
+  /* Printing a view (fresh look 3.6, John, 21 October): no top bar or buttons (marked
+     data-noprint), and each row, card and heading kept in one piece. A whole table isn't
+     kept together, or a long one jumps to the next page and leaves a gap. */
+  tr, td { break-inside: avoid; }
+  thead { display: table-header-group; }
+  .card, .station-card, .ya-card, .roundup, .rain-summary, .gauge-list .item { break-inside: avoid; }
+  h2, h3, .section-head, details summary { break-after: avoid; }
+  section.source:has(.ya-grid) { break-inside: avoid; }
+}
+
+/* "Compared with a year ago" (src/components/yearAgo.tsx). */
+.ya-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+/* The evening update has two cards (John, 22 October). */
+.ya-grid-two { grid-template-columns: repeat(2, 1fr); }
+.ya-card { padding: var(--space-4) var(--space-4); margin: 0; }
+.ya-card h4 { margin: 2px 0 6px; font-size: 18px; }
+.ya-diff { margin: 0 0 8px; font-weight: 600; }
+.ya-figs { margin: 0 0 6px; display: grid; gap: 2px; }
+.ya-figs div { display: flex; justify-content: space-between; gap: var(--space-3); }
+.ya-figs dt, .ya-figs dd { margin: 0; }
+.ya-key { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: baseline; }
+.ya-key-now, .ya-now { background: var(--color-accent); fill: var(--color-accent); }
+.ya-key-then, .ya-then { background: var(--color-neutral-800); fill: var(--color-neutral-800); }
+.ya-now, .ya-then { stroke: var(--color-surface); stroke-width: 2px; }
+.ya-strip { width: 100%; height: auto; display: block; margin-top: 6px; }
+.ya-axis { stroke: var(--color-divider); stroke-width: 1px; }
+.ya-band { fill: color-mix(in srgb, var(--color-neutral-800) 18%, transparent); }
+.ya-tick { stroke: var(--color-neutral-800); stroke-width: 2px; stroke-linecap: round; }
+.ya-drop { stroke: var(--color-accent); stroke-width: 2px; stroke-dasharray: 2 2; }
+.ya-label { font-size: 11px; font-family: var(--font-body); fill: var(--color-text); font-weight: 600; }
+.ya-scale { font-size: 9px; font-family: var(--font-body); fill: var(--color-neutral-700); }
+.ya-label-then { fill: var(--color-neutral-800); }
+.ya-credit { margin-top: var(--space-2); }
+@media (max-width: 720px) {
+  .ya-grid { grid-template-columns: 1fr; }
+}
+
+/* The national views (stage 6; from the stage 5 mock-ups): the heading strip, the gauge
+   lists, the area summaries and the chooser. */
+.strip { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; padding: var(--space-3) var(--space-6); margin: var(--space-6) 0 0; }
+.strip h2 { margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 0.02em; }
+.bar { height: 6px; border-radius: 3px; background: var(--color-accent-300); margin-top: 6px; min-width: 2px; }
+.gauges-table td, .gauges-table th { vertical-align: top; }
+.gauge-list .item { display: flex; justify-content: space-between; gap: var(--space-3); padding: 10px 0; border-top: 1px solid var(--color-divider); }
+.gauge-list .item:first-child { border-top: 0; }
+.gauge-list .right { text-align: right; flex: none; width: 120px; }
+.gauge-list .bar { margin-left: auto; }
+.rain-summary { padding: var(--space-4) var(--space-6); margin: 0 0 var(--space-3); }
+.rain-summary .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+details.all-stations, details.all-gauges { margin-top: var(--space-4); }
+details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-3); }
+/* At least 44px to tap on a phone (HOUSE-STYLE §6; fresh look 3.7). */
+@media (max-width: 720px) {
+  details summary { padding: 11px 0; margin-bottom: var(--space-1); }
+}
+.stale-note { margin: 4px 0 0; }
+@media (max-width: 720px) {
+  .strip, .rain-summary { padding: var(--space-4); }
+  .strip h2 { font-size: 18px; }
+}
+.gauges-intro { margin-bottom: 8px; }
+.rain-line { margin: 8px 0 0; }
+.loading { padding: var(--space-6) 0; }
+.load-failed, .not-found { padding: var(--space-4) var(--space-6); margin: var(--space-6) 0 0; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+.load-failed p, .not-found p { margin: 0; }
+.nav-brand { color: inherit; text-decoration: none; }
+.chooser-head { padding: var(--space-6) 0 var(--space-4); }
+.chooser-head p { margin: 0; }
+.chooser-head h2 { margin: 2px 0 0; }
+.chooser-about { margin: var(--space-6) 0 0; }
+@media (min-width: 721px) { .chooser-about { text-align: justify; } }
+.choose { display: grid; grid-template-columns: 1.2fr 1.2fr 0.8fr; gap: var(--space-4); align-items: stretch; }
+.choose .card { padding: var(--space-6); gap: var(--space-3); margin: 0; }
+.choose h3 { margin: 0; font-size: 20px; }
+.choose-row { display: flex; gap: var(--space-2); align-items: center; }
+.choose-row .input { flex: 1; min-width: 0; }
+.choose-areas { display: flex; flex-direction: column; gap: var(--space-3); }
+.choose select.input { appearance: auto; width: 100%; }
+.choose-error { font-size: 13px; color: var(--color-accent-800); font-weight: 600; margin-top: 4px; }
+@media (max-width: 720px) {
+  .choose { grid-template-columns: 1fr; }
+  .choose .card, .load-failed, .not-found { padding: var(--space-4); }
+}
+/* Text in typing boxes and lists is 16px on phones, or an iPhone zooms in when one is
+   tapped and doesn't zoom back out (HOUSE-STYLE §6; John, 20 October). */
+@media (max-width: 720px) {
+  .input, .plain-input { font-size: 16px; }
+}
+
+/* "Compared with a year ago" can be moved to just below the date and back (John, 21
+   October). At the top it gets a divider, so the summary below reads as a new part. */
+.ya-section { scroll-margin-top: var(--space-4); }
+.ya-move { margin-left: auto; font-size: 13.5px; align-self: center; }
+.ya-first { padding-bottom: var(--space-6); border-bottom: 1px solid var(--color-divider); }
+@media (max-width: 720px) {
+  .ya-move { min-height: 44px; }
+}
+
+/* Touch screens wider than a phone (an iPad, an iPhone Duo opened out) get the
+   computer layout, but are tapped like a phone, so their boxes are 16px too
+   (John, 22 October 2026). */
+@media (pointer: coarse) {
+  .input, .plain-input { font-size: 16px; }
+}
+
+/* Dark mode (John, 23 October): follows the device unless the visitor switches (John, 29 October; src/lib/theme.ts). The
+   same tokens as organic.css, given dark values; the ramp steps the page uses are mapped so
+   muted text, warnings, badges and the year-ago chart stay readable (contrast checked: body
+   text 11.2:1, grey notes 6.1:1, terracotta 5.6:1 on the background). Lightened a step
+   from the first version, which John found very dark (23 October, option B). Screen only, so a
+   printed page is always light. */
+@media screen {
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --color-bg: #2a2723;
+    --color-surface: #37332e;
+    --color-text: #e8dfcf;
+    --color-accent: #dd8a56;
+    --color-divider: color-mix(in srgb, #e8dfcf 16%, transparent);
+    --color-neutral-100: #423d36;
+    --color-neutral-700: #b0a593;
+    --color-neutral-800: #e3d9c7;
+    --color-accent-100: #4a2a14;
+    --color-accent-300: #b2622d;
+    --color-accent-600: #e8935d;
+    --color-accent-700: #f2a573;
+    --color-accent-800: #ffc6a5;
+    --color-accent-2-100: #2f3a20;
+    --color-accent-2-800: #d4e4b8;
+    --shadow-sm: 0 0 0 1px color-mix(in srgb, #e8dfcf 6%, transparent), 0 1px 2px #0006;
+    --shadow-md: 0 0 0 1px color-mix(in srgb, #e8dfcf 7%, transparent), 0 3px 10px #0008;
+    --shadow-lg: 0 0 0 1px color-mix(in srgb, #e8dfcf 8%, transparent), 0 12px 32px #000a;
+  }
+  /* Finer text smoothing in dark mode: Macs draw light text on a dark page with heavy, soft edges,
+     most of all the Caprasimo headings (John, October 30th 2026; HOUSE-STYLE §2). Only macOS
+     browsers use it; light mode is left as it is. */
+  :root[data-theme="dark"] body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+}
+
+.nav-right { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+.theme-switch { display: inline-flex; align-items: center; gap: 8px; flex: none; background: none; border: 0; padding: 4px 0; cursor: pointer; color: var(--color-neutral-700); font: inherit; }
+.theme-switch:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; border-radius: 999px; }
+.theme-switch-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+.theme-switch-track { position: relative; width: 46px; height: 26px; border-radius: 999px; background: color-mix(in srgb, var(--color-text) 18%, transparent); transition: background 0.2s; }
+.theme-switch-knob { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--color-bg); box-shadow: 0 1px 3px #0004; display: grid; place-items: center; color: var(--color-accent); transition: transform 0.2s; }
+.theme-switch[aria-checked="true"] .theme-switch-track { background: var(--color-accent); }
+.theme-switch[aria-checked="true"] .theme-switch-knob { transform: translateX(20px); }
+.theme-switch svg { width: 12px; height: 12px; display: block; }
+@media (prefers-reduced-motion: reduce) {
+  .theme-switch-track, .theme-switch-knob { transition: none; }
+}
+@media (max-width: 720px) {
+  .theme-switch { min-height: 44px; }
+  .theme-switch-label { display: none; }
+  .nav-right { gap: var(--space-2); }
+}
+
+/* "Copy chart" on a computer, "Share chart" on a touch screen (John, November 9th 2026, as in Refueller, Riverwatcher and
+   Lightreader), under each "Compared with a year ago" chart. */
+.share-row { display: flex; justify-content: flex-end; margin-top: var(--space-2); }
+.share-wrap { display: inline-flex; flex-direction: column; align-items: center; }
+.share-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 4px 14px; border-radius: 999px; border: 1px solid var(--color-divider); background: transparent; color: var(--color-accent-700); font: 600 14px var(--font-body); cursor: pointer; }
+.share-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.share-btn:disabled { opacity: .5; cursor: default; }
+.share-status { min-height: 18px; margin-top: 2px; font-size: 13px; line-height: 18px; color: var(--color-neutral-700); }
+.share-status:empty { visibility: hidden; }
+@media (max-width: 720px) { .share-row { justify-content: flex-start; } }
+@media (pointer: coarse) { .share-btn { min-height: 44px; } }
+@media print { .share-row { display: none !important; } }
+
+/* Dark mode colour review (John, November 14th 2026: options 5 and 7, house style §2).
+   7, clearer layers: the page a step darker than before, cards lifted with a shadow, and an
+   opened list a step lighter. 5, colour by state: each "Compared with a year ago" card edged by
+   its answer (warmer terracotta, cooler or wetter blue, drier sand; none when it's the same).
+   Edge colours at least 3:1 against the card. Dark mode on screen only: light mode, printing
+   and shared pictures are unchanged. */
+@media screen {
+  :root[data-theme="dark"] { --color-bg: #24211e; }
+  :root[data-theme="dark"] .card { box-shadow: 0 0 0 1px color-mix(in srgb, #e8dfcf 8%, transparent), 0 4px 14px #0009; }
+  :root[data-theme="dark"] details[open] > summary + * { background: #403b35; border-radius: 12px; --color-accent: #ea9862; }
+  :root[data-theme="dark"] .ya-warmer { --ya-edge: #dd8a56; }
+  :root[data-theme="dark"] :is(.ya-cooler, .ya-wetter) { --ya-edge: #6a98c6; }
+  :root[data-theme="dark"] .ya-drier { --ya-edge: #d8b46e; }
+  :root[data-theme="dark"] :is(.ya-warmer, .ya-cooler, .ya-wetter, .ya-drier) { box-shadow: inset 5px 0 0 var(--ya-edge), 0 0 0 1px color-mix(in srgb, #e8dfcf 8%, transparent), 0 4px 14px #0009; }
+}

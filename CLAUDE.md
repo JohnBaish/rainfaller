@@ -68,3 +68,20 @@ average with its wording and the 10-of-14-days rule, and asked for "by this time
 ("By 2.45pm yesterday: 0.4 mm", Claude's wording in the agreed pattern). Recorded in `SPEC.md`; no
 questions left open. `PLAN.md` written: stage 1 mock-ups, 2 Hindcaster's file, 3 the page, 4 favicon and
 preview picture, 5 launch. No code yet.
+
+### 2026-11-17 — stage 1: mock-ups (branch `stage-1-mockups`)
+
+**What:** `design/mock/` (a static page, `mock.template.html`, filled in by `make-mock.py` with figures worked
+out from real Environment Agency readings fetched at 9.47am today; Hindcaster's `organic.css` and `global.css`
+copied beside it). RG4's eight nearest reporting gauges from Hindcaster's own list: a wet morning, 8.2 to
+13.7 mm by 9.15am against fortnight averages of 0.4 to 0.7 mm. Pictures in `design/previews/mock-*.png`: the
+place and the chooser at 1200px, 390px and 844×390 with touch, light and dark, and `?state=edge` (labelled
+illustration: a late gauge, a failed gauge, a gauge without enough days). Drafts for John: the chooser's
+paragraph, "Not available" for a late gauge's last hour, the failed-gauge sentence.
+
+**Found:** each gauge's 15 days by its station address took 1 to 15 seconds here; by its measure address
+(SPEC §4's test) it was usually under a second, so the page should use the measure address (Hindcaster's file
+can carry it).
+
+**Verified:** no page errors, no sideways scroll at any size, all four brand fonts loaded. Fonts were loaded by
+path at render time (they come with the app's build later). Not merged.
