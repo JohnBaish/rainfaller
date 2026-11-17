@@ -10,7 +10,8 @@ Read these first, in this order:
 1. `SPEC.md`: what Rainfaller does (a draft being agreed with John; the
    numbered questions are at the end).
 2. `HOUSE-STYLE.md`: the shared look and ways of working. Copied from
-   `JohnBaish/clockwheel` at commit `f8c4aff` (November 17th 2026), with
+   `JohnBaish/clockwheel` at commit `f8c4aff` (November 17th 2026; `HOUSE-STYLE.md`
+   re-copied at `ba9c802` the same day for §17), with
    `SEO-HANDOVER.md` and `.claude/skills/fresh-look/`. Clockwheel holds the
    master copies; re-copy them if they change, and note it here.
 3. `design/quicker-rain-2026-11-17.md`: the first tests of the Environment
@@ -68,3 +69,9 @@ average with its wording and the 10-of-14-days rule, and asked for "by this time
 ("By 2.45pm yesterday: 0.4 mm", Claude's wording in the agreed pattern). Recorded in `SPEC.md`; no
 questions left open. `PLAN.md` written: stage 1 mock-ups, 2 Hindcaster's file, 3 the page, 4 favicon and
 preview picture, 5 launch. No code yet.
+
+### 2026-11-17 — house style re-copied (notes only, straight to `main`)
+
+From clockwheel `ba9c802`, at John's request: the new §17, "Sharing a picture" (every Share button sends a sentence, a
+link to the same place sent separately, and a title; each sentence agreed with John as part of the design; dates rather
+than "today"; a full postcode cut to its first half), and a line in §16 step 9 pointing to it. No other change; no code.
