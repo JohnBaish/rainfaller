@@ -279,3 +279,5 @@ Copy/Share wait until every listed gauge has answered (the button is greyed out 
 **Verified:** checks 23, lint, build; with one Environment Agency answer held back 15 seconds on purpose, four PE38 bars
 showed within half a second, the summary and button 15.8 seconds later; the full earlier test again at 1200px, 390px and
 844×390 with touch, light and dark: all as before. Picture `design/previews/compare-built/filling-in.png`.
+
+**Merged to `main` (2026-11-17)** at John's word; branch deleted with the "Delete merged branches" job.
