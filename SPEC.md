@@ -55,10 +55,11 @@ view, nearest first. For each:
 
 A small bar beside each "Today" figure, as Hindcaster's gauge lists have.
 
-## 4. Compared with the last fortnight (new, for John)
+## 4. Compared with the last fortnight and yesterday
 
-John asked for "by this time yesterday" or, better, "average by this time over
-the last fortnight" (wording to be discussed).
+**Agreed (John, November 17th 2026):** both the fortnight's average by this
+time and "by this time yesterday", with the wording below; an average only
+when at least 10 of the 14 days count.
 
 **How it would work.** For each gauge, the rain from midnight to the time of
 its latest reading today, on each of the last 14 days, averaged. If today's
@@ -70,12 +71,15 @@ so the clock-change days are handled the same way.
   of the 14 days. Hindcaster has the same rule for a whole day.)
 - The average is shown only if at least 10 of the 14 days count. Otherwise:
   "Not enough readings for an average".
-- "By this time yesterday" comes from the same readings at no extra cost, so it
-  could be shown too. Claude's view: the fortnight only, as one day says little.
+- "By this time yesterday" comes from the same readings at no extra cost.
+  Yesterday counts only if the gauge reported at or after that time; otherwise
+  it isn't shown.
 
-**Drafts, for John:**
+**Wording (agreed):**
 
-- Under each gauge's "Today": "Fortnight average by 2.45pm: 1.1 mm".
+- Under each gauge's "Today": "Fortnight average by 2.45pm: 1.1 mm" and
+  "By 2.45pm yesterday: 0.4 mm" (the second line's wording is Claude's, in the
+  same pattern).
 - Summary: "So far today: 0.4 to 6.8 mm. More than the fortnight's average by
   this time at six of the eight gauges."
 - A note in "About these figures": "The fortnight's average is the rain from
@@ -112,11 +116,11 @@ not be.
 - **The gauge list** (names, "near" lines, counties, positions, which gauges
   are trusted) and **postcode districts** come from Hindcaster. See section 7.
 
-## 7. Getting Hindcaster's gauge list across (John's question 4)
+## 7. Getting Hindcaster's gauge list across
 
-**John:** there ought to be a way, as the monthly check is valuable. The options:
+**Agreed (John, November 17th 2026): option A.** The options as considered:
 
-- **A. Hindcaster publishes it (Claude's recommendation).** Hindcaster's website
+- **A. Hindcaster publishes it (chosen).** Hindcaster's website
   gets one extra public file with a fixed address, for example
   `hindcaster.baish.net/rain-gauges.json`, holding only what Rainfaller needs.
   This would be each offered gauge's ID, name, line, county and position, plus
@@ -171,7 +175,4 @@ fortnight's average; alerts; forecasts; "Use my location".
 
 ## 11. Questions for John
 
-1. The gauge list: option A, B or C (section 7)?
-2. The fortnight's average (section 4): in or out, and the wording. Also
-   "by this time yesterday" as well, or not?
-3. At least 10 of the 14 days for an average: right, or a different number?
+None open (all answered November 17th 2026). New ones go here, numbered.

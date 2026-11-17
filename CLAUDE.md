@@ -60,3 +60,11 @@ from Hindcaster's `design/rainfaller-spec-draft-2026-11-17.md`, with his answers
 fresh-look skill from clockwheel `f8c4aff`. **Tested for section 4:** one gauge (E7050) asked for 15
 days: 1,377 readings, 13 KB compressed, usually under a second (one request took 22 seconds); 95 of 96
 readings on two of the 14 days. No code yet.
+
+### 2026-11-17 — John's answers; PLAN.md (notes only, straight to `main`)
+
+John chose option A for the gauge list (Hindcaster publishes a public file), agreed the fortnight's
+average with its wording and the 10-of-14-days rule, and asked for "by this time yesterday" too
+("By 2.45pm yesterday: 0.4 mm", Claude's wording in the agreed pattern). Recorded in `SPEC.md`; no
+questions left open. `PLAN.md` written: stage 1 mock-ups, 2 Hindcaster's file, 3 the page, 4 favicon and
+preview picture, 5 launch. No code yet.
