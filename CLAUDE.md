@@ -138,3 +138,12 @@ recent places, reopening on the last place and a Welsh postcode refused all work
 
 **John:** "‘The last hour’ is defined as the aggregate of the four latest 15-minute readings." and "The gauges are the ones
 offered by the companion baish.net website Hindcaster: …". Otherwise agreed; on to stage 4. Build clean.
+
+### 2026-11-17 — stage 4: favicon A chosen and wired in; link-preview picture drafted (branch `stage-3-page`)
+
+**John chose A** (an ink raindrop with a terracotta shine, on the cream disc with the terracotta ring). It is
+`public/favicon.svg`, linked from `index.html`. Options and their tab-row picture in `design/favicon-options*`.
+**Link-preview picture drafted** (`design/og-rainfaller.html`, from Hindcaster's template; rendered to
+`design/previews/og-rainfaller.png`, 1200×630, both fonts confirmed loaded): the drop large on the pale disc, "Rainfaller"
+and the agreed tagline "How much rain has fallen near you today, gauge by gauge." Waiting for John before it goes into
+`public/` with the `og:` and `twitter:` tags.

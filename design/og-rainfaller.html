@@ -1,0 +1,58 @@
+<!doctype html>
+<!--
+  Link-preview ("og:image") image for rainfaller.baish.net
+  (public/og-rainfaller.png), made from Hindcaster's design/og-hindcaster.html, itself from clockwheel's design/og-clockmaker.html
+  template (same layout, sizes and fonts). The illustration is the favicon's
+  raindrop, drawn large. See HOUSE-STYLE.md §7.
+
+  To make a new one: change the <h1> and <p>, replace the .art block with
+  the tool's own illustration (keep it 440×440 at left 96, top 95), then
+  screenshot at exactly 1200×630 (e.g. Playwright, after `npm ci` so the
+  font file below exists). The heading font is loaded from node_modules by
+  relative path ON PURPOSE: loading it from Google Fonts silently fails
+  without network access and the title falls back to a plain serif, which
+  is exactly what went wrong with the first og-backtimer.png. Check the
+  rendered title really is Caprasimo before using the image.
+  The tagline is Figtree 600 (the app's body font), also loaded by path.
+-->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face {
+    font-family: 'Caprasimo';
+    src: url('../node_modules/@fontsource/caprasimo/files/caprasimo-latin-400-normal.woff2') format('woff2');
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'Figtree';
+    src: url('../node_modules/@fontsource/figtree/files/figtree-latin-600-normal.woff2') format('woff2');
+    font-weight: 600;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1200px; height: 630px; background: #f5ead8; font-family: -apple-system, sans-serif; position: relative; overflow: hidden; }
+
+  /* The favicon's raindrop, on the same pale disc as Clockmaker's. */
+  .art { position: absolute; left: 96px; top: 95px; width: 440px; height: 440px; }
+  .art svg { width: 100%; height: 100%; display: block; }
+
+  /* Text block: same position and sizes on every tool's image. */
+  .text { position: absolute; left: 592px; top: 225px; width: 560px; }
+  h1 { font-family: 'Caprasimo', serif; font-weight: 400; font-size: 72px; color: #201e1d; line-height: 1; margin-bottom: 18px; }
+  p { font-family: 'Figtree', sans-serif; font-size: 27px; font-weight: 600; color: #645c50; line-height: 1.35; }
+</style>
+</head>
+<body>
+  <div class="art">
+    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="24" fill="#ebddc5"/>
+      <path d="M24 9.5C24 9.5 14.5 21 14.5 28a9.5 9.5 0 0 0 19 0C33.5 21 24 9.5 24 9.5Z" fill="#201e1d"/>
+      <path d="M19.5 28a4.5 4.5 0 0 0 4.5 4.5" fill="none" stroke="#c67139" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="text">
+    <h1>Rainfaller</h1>
+    <p>How much rain has fallen near you<br>today, gauge by gauge.</p>
+  </div>
+</body>
+</html>
