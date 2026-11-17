@@ -11,7 +11,7 @@ Read these first, in this order:
    numbered questions are at the end).
 2. `HOUSE-STYLE.md`: the shared look and ways of working. Copied from
    `JohnBaish/clockwheel` at commit `f8c4aff` (November 17th 2026; `HOUSE-STYLE.md`
-   re-copied at `ba9c802` the same day for §17), with
+   and the fresh-look skill re-copied at `372c03c` the same day), with
    `SEO-HANDOVER.md` and `.claude/skills/fresh-look/`. Clockwheel holds the
    master copies; re-copy them if they change, and note it here.
 3. `design/quicker-rain-2026-11-17.md`: the first tests of the Environment
@@ -222,3 +222,10 @@ all built and merged the same day at his word ("make them live in your own time"
 readings for RG4, TR21 and NE66 at 1200px, 390px and 844×390 with touch, light and dark, and forced states (a
 failed, stopped and slow gauge, EA down, a dry day, just after midnight): wording as above, no sideways scroll,
 no page errors (only Vercel's local statistics 404). Not checked: a real iPhone, a real midnight.
+
+### 2026-11-17 — the "Delete merged branches" job added (straight to `main`, at John's word)
+
+Found in the fresh look: this repo had no `.github/workflows/tidy-branches.yml`, which every baish.net repo has so a cloud
+session can delete merged branches (HOUSE-STYLE §10). Copied unchanged from clockwheel (`372c03c`). At John's request the
+house style now lists it among the files every new tool copies in its first thread (§1, §16), and the fresh look checks for
+it; `HOUSE-STYLE.md` and the fresh-look `SKILL.md` re-copied. Run workflow only, nothing scheduled.
