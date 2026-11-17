@@ -170,3 +170,11 @@ scroll. Waiting for John.
 **John:** option C (the left panel's four rows a little more compact, all three panels the same height). To be built in
 clockwheel's `landing.html` when Rainfaller goes on the hub, after the site is live at rainfaller.baish.net. The fresh look
 to be run in a new thread. Waiting for John to say the domain is live.
+
+### 2026-11-17 — live; on baish.net; robots.txt and sitemap (straight to `main`, at John's word)
+
+Live at rainfaller.baish.net (checked: the page, favicon, link-preview picture and the fallback gauge list all 200; RG4
+in Chromium at 1200px, 390px and 844×390 with touch, light and dark, no errors, no sideways scroll). Added to baish.net
+in layout C (clockwheel's `landing.html`, merged there at John's word). `public/robots.txt` (allow all, with the sitemap)
+and `public/sitemap.xml` (the main address), as Hindcaster's. Next for John: Search Console, submit the sitemap and request
+indexing; then a fresh look in a new thread.

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rainfaller.baish.net/sitemap.xml
