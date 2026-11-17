@@ -1,0 +1,58 @@
+# Copy the gauge list and postcode districts (monthly)
+#
+# Rainfaller reads its gauge list and postcode districts from Hindcaster's site, and keeps its own
+# copy in public/data/ in case Hindcaster can't be reached (SPEC §7; John, November 17th 2026).
+# This job refreshes that copy once a month, on the 3rd, the day after Hindcaster's own monthly
+# gauge check, and can be run by hand with "Run workflow". It changes nothing if a file can't be
+# fetched or doesn't look right. Committing to main makes Vercel rebuild the site.
+name: Copy gauge list
+
+on:
+  schedule:
+    - cron: '23 6 3 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: copy-gauges
+  cancel-in-progress: false
+
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Fetch and check Hindcaster's two files
+        run: |
+          set -euo pipefail
+          mkdir -p new
+          for f in gauges outcodes; do
+            curl -fsS --retry 3 --max-time 60 "https://hindcaster.baish.net/rainfaller/$f.json" -o "new/$f.json"
+          done
+          node -e '
+            const fs = require("fs")
+            const g = JSON.parse(fs.readFileSync("new/gauges.json", "utf8"))
+            const o = JSON.parse(fs.readFileSync("new/outcodes.json", "utf8"))
+            const ng = Array.isArray(g.gauges) ? g.gauges.length : 0
+            const no = o.outcodes ? Object.keys(o.outcodes).length : 0
+            const ok = ng >= 500 && no >= 2000 && g.gauges.every((x) => x.id && x.live && x.name && Number.isFinite(x.e) && Number.isFinite(x.n))
+            console.log(`gauges ${ng}, postcode districts ${no}`)
+            if (!ok) { console.log("::error::A file did not look right, so nothing was changed."); process.exit(1) }
+          '
+          cp new/gauges.json new/outcodes.json public/data/
+          rm -r new
+      - name: Save to main if anything changed
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- public/data; then echo "No change."; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data
+          git commit -m "Gauge list: monthly copy from Hindcaster $(date -u +%F)"
+          git push

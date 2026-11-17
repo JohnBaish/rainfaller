@@ -231,3 +231,18 @@ house style now lists it among the files every new tool copies in its first thre
 it; `HOUSE-STYLE.md` and the fresh-look `SKILL.md` re-copied. Run workflow only, nothing scheduled. Then run, trial first (run 44086955432: three merged branches, nothing unmerged) and for real (run 44087036335):
 `claude/vibrant-lovelace-2gxszt`, `stage-1-mockups` and `stage-3-page` deleted; only `main` left (checked with
 `git ls-remote --heads origin`).
+
+### 2026-11-17 — the monthly copy of the gauge list; John's answers on comparing (straight to `main`, at John's word)
+
+**Monthly job (John: go ahead):** `.github/workflows/copy-gauges.yml` ("Copy gauge list"): on the 3rd of each month at
+06:23 UTC, and by "Run workflow", it fetches Hindcaster's `gauges.json` and `outcodes.json`, checks them (at least 500 gauges,
+each with an id, live id, name and position; at least 2,000 postcode districts), copies them into `public/data/` and commits to
+`main` only if they changed (they carry the time they were made, so in practice every month, which also keeps GitHub from
+switching the schedule off after 60 quiet days). A file that fails to download or check changes nothing. **For John:** save the
+file once on github.com under his own account, as with Hindcaster, so GitHub runs the schedule.
+
+**Comparing two places, John's answers:** (1) one chart, rain so far today, with the last hour as a number by each bar;
+(2) the summary sentences as drafted; (3) the share sentence as drafted ("Rain so far on Tuesday November 17th at the eight
+gauges nearest RG4 and PE38, from Rainfaller."); (4) a link opening both places (`#RG4/PE38`) that adds neither to recent
+places (opening a link to one place may still add it); (5) the comparison place isn't remembered. To build on a branch after
+the fresh look's fixes.
