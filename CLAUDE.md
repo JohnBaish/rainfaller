@@ -179,6 +179,17 @@ in layout C (clockwheel's `landing.html`, merged there at John's word). `public/
 and `public/sitemap.xml` (the main address), as Hindcaster's. Next for John: Search Console, submit the sitemap and request
 indexing; then a fresh look in a new thread.
 
+### 2026-11-17 — compare two places: mock-ups (design only, straight to `main`)
+
+**John** asked, while the fresh look runs, for a simple way to compare two postcode areas at the bottom of the page: charts of
+the nearest gauges' rain so far today and in the last hour, with Copy or Share as in HOUSE-STYLE §17. Mock-ups made from real
+readings for RG4 and PE38 (fetched at about 11.15am), by adding the section in the browser to the live page (nothing in the app
+changed): `design/previews/compare/` (empty and filled, 1200px and 390px with touch, light and dark), with the script and the
+readings in `design/compare-mock/`. Two place colours checked with the dataviz validator: light `#c67139` and `#4a78b5`, dark
+`#d07a45` and `#5b93d8`, all checks passed (including colour-blind separation). No errors, no sideways scroll. Waiting for John.
+
+**Also asked:** how to make the monthly refresh of `public/data/` happen. No workflow exists yet (`src/lib/load.ts`'s comment
+names `.github/workflows/copy-gauges.yml`, which hasn't been made). Options put to John.
 ### 2026-11-17 — fresh look, and the agreed fixes (live)
 
 Fresh look of the live site at `8d9119e` (report sent as a PDF, nothing changed during the review). Figures
