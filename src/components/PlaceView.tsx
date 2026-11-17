@@ -169,9 +169,9 @@ function AboutFigures() {
     <section className="card rf-about">
       <h3>About these figures</h3>
       <p>Readings come from the Environment Agency's rain gauges every 15 minutes, usually 20 to 45 minutes after the rain fell. They're provisional: the Environment Agency can correct them later.</p>
-      <p>Today is from midnight, UK time. The last hour is the four latest 15-minute readings.</p>
+      <p>Today is from midnight, UK time. ‘The last hour’ is defined as the aggregate of the four latest 15-minute readings.</p>
       <p>The fortnight's average is the rain from midnight to the same time on each of the last 14 days, averaged. It includes dry days, so one wet day can lift it a lot. It's shown when at least ten of the 14 days have readings.</p>
-      <p>The gauges are the ones Hindcaster offers: checked each month against the Environment Agency's quality-checked figures, less any held back that day for disagreeing with the gauges around them. A 15-minute reading of more than 50 mm is left out.</p>
+      <p>The gauges are the ones offered by the companion baish.net website Hindcaster: checked each month against the Environment Agency's quality-checked figures, less any held back that day for disagreeing with the gauges around them. A 15-minute reading of more than 50 mm is left out.</p>
       <p>Rainfaller is an independent project, not connected with or endorsed by the Environment Agency.</p>
     </section>
   )

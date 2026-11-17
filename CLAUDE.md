@@ -133,3 +133,8 @@ summary say "both". **Not yet:** a monthly job to refresh `public/data/`; favico
 **Verified:** tsc, lint, checks, build; in Chromium with the real EA readings for RG4 at 1200px, 390px and 844×390 with touch,
 light and dark: no errors (bar Vercel's statistics script, local only), no sideways scroll, boxes 16px on a phone; Refresh,
 recent places, reopening on the last place and a Welsh postcode refused all work.
+
+### 2026-11-17 — "About these figures": John's wording (branch `stage-3-page`)
+
+**John:** "‘The last hour’ is defined as the aggregate of the four latest 15-minute readings." and "The gauges are the ones
+offered by the companion baish.net website Hindcaster: …". Otherwise agreed; on to stage 4. Build clean.
