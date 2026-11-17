@@ -121,3 +121,15 @@ postcode district). Remade with every Hindcaster update. Checked live: both 200,
 `cache-control: public, max-age=300`. Ask the EA by `m` (`/id/measures/<m>/readings?since=…`); if a gauge has no `m`, by
 station (`/id/stations/<live>/readings`). The mock-ups (stage 1) are on branch `stage-1-mockups`, agreed apart from
 building them.
+
+### 2026-11-17 — stage 3: the page built (branch `stage-3-page`, not merged)
+
+**What:** Vite + React + TypeScript (Hindcaster's versions and settings). The chooser (postcode, recent places) and a
+place's view (`#RG4`): the eight nearest reporting gauges, each asked for its readings by the browser (by measure, else by
+station), figures in `src/lib/rain.ts`, the summary in `src/lib/summary.ts`, Refresh, colour by state in dark mode, "About
+these figures" (drafts), footer. The gauge list and postcode districts come from Hindcaster's public files, with copies in
+`public/data/` if Hindcaster can't be reached. `npm run check` (`scripts/check.ts`, 13 checks of the rules). Two gauges in a
+summary say "both". **Not yet:** a monthly job to refresh `public/data/`; favicon and preview picture (stage 4).
+**Verified:** tsc, lint, checks, build; in Chromium with the real EA readings for RG4 at 1200px, 390px and 844×390 with touch,
+light and dark: no errors (bar Vercel's statistics script, local only), no sideways scroll, boxes 16px on a phone; Refresh,
+recent places, reopening on the last place and a Welsh postcode refused all work.
