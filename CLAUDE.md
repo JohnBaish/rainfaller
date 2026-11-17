@@ -154,3 +154,13 @@ and the agreed tagline "How much rain has fallen near you today, gauge by gauge.
 today, gauge by gauge."), everywhere. `public/og-rainfaller.png` (from `design/og-rainfaller.html`); `index.html` has the
 canonical address, `og:` and `twitter:` tags (description = the tagline) and a search description starting with it (draft,
 under Google's usual 155 characters). SPEC, PLAN and this file's heading updated.
+
+### 2026-11-17 — merged to `main`; baish.net mock-ups with Rainfaller (notes only)
+
+**John** agreed the search title and description; stages 3 and 4 merged to `main` (fast-forward; checks 13 of 13, build
+clean). Then, at his request, mock-ups of the baish.net page with Rainfaller as a fourth site in "The sky and weather"
+(after Hindcaster), made by adding the row in the browser to clockwheel's built `landing.html` (nothing changed there):
+`design/previews/hub/` — A as it is (left panel one row taller), B all three panels the same height with rows spread out,
+C the left panel's four rows made more compact and the panels the same height; plus 900px and 390px (A; the small icons,
+as now). Hub picture `rainfaller.webp` cropped from the link-preview picture as the others are. No errors, no sideways
+scroll. Waiting for John.
