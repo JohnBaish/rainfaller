@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { clock, miles, mm } from '../lib/format.ts'
+import { clock, miles, mm, oneDecimal } from '../lib/format.ts'
 import { loadLists, readings, type Gauge } from '../lib/load.ts'
 import { nearest } from '../lib/place.ts'
-import { askSince, figures, type GaugeFigures } from '../lib/rain.ts'
+import { askSeconds, askSince, figures, type GaugeFigures } from '../lib/rain.ts'
 import { remember } from '../lib/recent.ts'
 import { state, summary } from '../lib/summary.ts'
 import { numberWord as n } from '../lib/words.ts'
@@ -30,9 +30,9 @@ export function PlaceView({ code }: { code: string }) {
   const [askedAt, setAskedAt] = useState(0)
   const round = useRef(0)
 
-  const ask = useCallback((list: Row[]) => {
+  const ask = useCallback((list: Row[], refresh = false) => {
     const now = new Date()
-    const since = askSince(now)
+    const since = askSince(now, askSeconds(now, refresh))
     const mine = ++round.current
     setAskedAt(now.getTime())
     setRows(list.map((r) => ({ ...r, status: 'loading', fig: undefined })))
@@ -88,20 +88,52 @@ export function PlaceView({ code }: { code: string }) {
   const late = (r: Row) => !!r.fig?.latest && newest - r.fig.latest > LATE
   const allIn = rows !== null && shown.every((r) => r.status !== 'loading')
   const most = Math.max(0, ...done.map((r) => r.fig!.today ?? 0))
+  // Every gauge listed counts (fresh look 2.2, option b): a failed gauge has no figures.
   const lines = allIn
-    ? summary(done.map((r) => ({ name: r.gauge.name, hour: late(r) ? null : r.fig!.hour, today: r.fig!.today, average: r.fig!.average })))
+    ? summary(shown.map((r) => {
+        const f = r.status === 'done' ? r.fig : undefined
+        return {
+          name: r.gauge.name,
+          hour: f && !late(r) ? f.hour : null,
+          today: f ? f.today : null,
+          average: f ? f.average : null,
+          yesterdayWhole: f && f.yesterdayComplete ? f.yesterdayWhole : null,
+        }
+      }))
     : []
+  const allFailed = allIn && shown.length > 0 && shown.every((r) => r.status === 'failed')
+  // The nearest gauge more than 20 miles away (fresh look 4.3, John, November 17th 2026).
+  const farOff = allIn && shown.length > 0 && Math.round(shown[0].miles) > 20
+  const credit = (() => {
+    const t = `This uses Environment Agency rainfall data from the real-time data API (Beta). ${credits.join(' ')}`.trim()
+    return /[.!?]$/.test(t) ? t : `${t}.`
+  })()
 
   const todayCell = (r: Row) => {
     if (r.status === 'loading') return <span className="rf-loading">Getting readings…</span>
     if (r.status === 'failed' || !r.fig) return <span className="muted">Couldn't get this gauge's readings. Press Refresh to try again.</span>
     const f = r.fig
-    if (f.today === null) return <span className="muted">No readings since midnight yet.</span>
+    if (f.today === null) {
+      // A gauge that has stopped (fresh look 2.4): when its last reading was, not "yet".
+      if (late(r)) {
+        const when = clock(f.latest!)
+        return <div className="rf-late"><div className="note">Latest reading {when === 'midnight' ? 'at midnight' : `${when} yesterday`}</div></div>
+      }
+      // Just after midnight (fresh look 2.5): yesterday's total until today's readings arrive.
+      return (
+        <div>
+          <span className="muted">No readings since midnight yet.</span>
+          {f.yesterdayWhole !== null && f.yesterdayEnd !== null && (
+            <div className="note">{f.yesterdayComplete ? 'Yesterday' : `Yesterday to ${clock(f.yesterdayEnd)}`}: {mm(f.yesterdayWhole)}</div>
+          )}
+        </div>
+      )
+    }
     const cut = clock(f.latest!)
     return (
       <div className={late(r) ? 'rf-late' : ''}>
         <span className="big mono">{mm(f.today)}</span>
-        <div className="bar" style={{ width: `${Math.max(2, most ? (f.today / most) * 100 : 0)}%` }} />
+        {oneDecimal(f.today) !== '0.0' && <div className="bar" style={{ width: `${Math.max(2, most ? (f.today / most) * 100 : 0)}%` }} />}
         {late(r) && <div className="note">Latest reading {cut}</div>}
         <div className="note">{f.average === null ? 'Not enough readings for an average' : `Fortnight average by ${cut}: ${mm(f.average)}`}</div>
         {f.yesterday !== null && <div className="note">By {cut} yesterday: {mm(f.yesterday)}</div>}
@@ -123,14 +155,17 @@ export function PlaceView({ code }: { code: string }) {
       </div>
       <div className="fresh">
         <p className="muted" aria-live="polite">
-          {checked && newest ? `Readings to ${clock(newest)}. Checked at ${clock(checked)}.` : 'Getting the latest readings…'}
+          {allFailed
+            ? "Couldn't reach the Environment Agency. Press Refresh to try again."
+            : checked && newest ? `Readings to ${clock(newest)}. Checked at ${clock(checked)}.` : 'Getting the latest readings…'}
         </p>
-        <button className="btn btn-secondary" type="button" disabled={!allIn} onClick={() => rows && ask(rows)} data-noprint>Refresh</button>
+        <button className="btn btn-secondary" type="button" disabled={!allIn} onClick={() => rows && ask(rows, true)} data-noprint>Refresh</button>
       </div>
+      {farOff && <p className="muted far-note">The nearest gauges are some way off, so may not reflect the rain here.</p>}
       {lines.length > 0 && <div className="card roundup">{lines.map((l) => <p key={l}>{l}</p>)}</div>}
       <section className="source">
         <div className="section-head"><h3>Rain today</h3></div>
-        <p className="note gauges-intro">The {n(shown.length || SHOWN)} nearest Environment Agency rain gauges reporting, nearest first. Today is from midnight.</p>
+        <p className="note gauges-intro">The {n(shown.length || SHOWN)} nearest Environment Agency rain gauges reporting, nearest first. Today is from midnight.<span className="dark-only"> A blue edge means wetter than the fortnight's average by this time; sand, drier.</span></p>
         <table className="table figures rf-table">
           <colgroup><col style={{ width: '34%' }} /><col style={{ width: '16%' }} /><col style={{ width: '14%' }} /><col style={{ width: '36%' }} /></colgroup>
           <thead><tr><th>Gauge</th><th>Distance</th><th>Last hour</th><th>Today</th></tr></thead>
@@ -156,7 +191,7 @@ export function PlaceView({ code }: { code: string }) {
             </div>
           ))}
         </div>
-        <p className="data-credit">This uses Environment Agency rainfall data from the real-time data API (Beta). {credits.join(' ')}</p>
+        <p className="data-credit">{credit}</p>
       </section>
       <AboutFigures />
     </>

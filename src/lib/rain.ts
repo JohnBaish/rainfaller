@@ -55,6 +55,12 @@ export type GaugeFigures = {
   average: number | null
   /** How many of the 14 days counted. */
   days: number
+  /** Rain over the whole of yesterday, up to `yesterdayEnd`; null with no readings yesterday. */
+  yesterdayWhole: number | null
+  /** When `yesterdayWhole` runs to: midnight if the day is complete, else the latest reading. */
+  yesterdayEnd: number | null
+  /** Whether `yesterdayWhole` covers the whole of yesterday. */
+  yesterdayComplete: boolean
   rejected: number
 }
 
@@ -64,10 +70,15 @@ export function figures(raw: { t: number; v: unknown }[], now: Date): GaugeFigur
   const today = ukParts(now).date
   const startToday = ukAt(today, 0, 0)
   const latest = readings.length ? readings[readings.length - 1].t : null
-  const none = { latest, hour: null, today: null, yesterday: null, average: null, days: 0, rejected }
+  const none = { latest, hour: null, today: null, yesterday: null, average: null, days: 0, yesterdayWhole: null, yesterdayEnd: null, yesterdayComplete: false, rejected }
   if (latest === null) return none
   const hour = total(readings.filter((r) => r.t > latest - 60 * MINUTE && r.t <= latest))
-  if (latest <= startToday) return { ...none, hour }
+  // The whole of yesterday (shown just after midnight, before today's readings arrive).
+  const startYesterday = ukAt(addDays(today, -1), 0, 0)
+  const yesterdayEnd = latest > startYesterday ? Math.min(latest, startToday) : null
+  const yesterdayWhole = yesterdayEnd === null ? null : total(readings.filter((r) => r.t > startYesterday && r.t <= yesterdayEnd))
+  const yesterdayComplete = latest >= startToday
+  if (latest <= startToday) return { ...none, hour, yesterdayWhole, yesterdayEnd, yesterdayComplete }
 
   // The clock time of the latest reading, used for every earlier day.
   const at = ukParts(new Date(latest))
@@ -92,11 +103,25 @@ export function figures(raw: { t: number; v: unknown }[], now: Date): GaugeFigur
     yesterday: upTo(addDays(today, -1)),
     average,
     days: past.length,
+    yesterdayWhole,
+    yesterdayEnd,
+    yesterdayComplete,
     rejected,
   }
 }
 
-/** The instant from which to ask for readings: midnight UK time 14 days before `now`'s day. */
-export function askSince(now: Date): string {
-  return new Date(ukAt(addDays(ukParts(now).date, -FORTNIGHT), 0, 0)).toISOString().replace('.000Z', 'Z')
+/** The instant from which to ask for readings: midnight UK time 14 days before `now`'s day, plus
+ *  `seconds` (under 15 minutes, so no reading the page uses is lost). The Environment Agency keeps
+ *  a shared copy of each answer and can hand out one more than 10 minutes old (fresh look 2.1,
+ *  November 17th 2026), so the question is varied to get a fresh answer. */
+export function askSince(now: Date, seconds = 0): string {
+  const at = ukAt(addDays(ukParts(now).date, -FORTNIGHT), 0, 0) + Math.min(Math.max(0, Math.floor(seconds)), 899) * 1000
+  return new Date(at).toISOString().replace('.000Z', 'Z')
+}
+
+/** The seconds for `askSince`: on opening, a value that changes every 15 minutes (visitors in the
+ *  same quarter-hour share answers); on Refresh, one that changes every second, so it always
+ *  asks afresh (fresh look 2.1, option b, John, November 17th 2026). */
+export function askSeconds(now: Date, refresh: boolean): number {
+  return refresh ? 600 + (Math.floor(now.getTime() / 1000) % 290) : Math.floor(now.getTime() / 900_000) % 600
 }

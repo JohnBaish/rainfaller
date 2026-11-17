@@ -19,7 +19,7 @@ export function Chooser() {
     if (!code) return setError("That doesn't look like a postcode. Try one like RG1 or RG1 8FR.")
     try {
       const { outcodes } = await loadLists()
-      if (!outcodes.outcodes[code]) return setError(`Only England postcodes are currently accepted. ${code} isn't a postcode district in England.`)
+      if (!outcodes.outcodes[code]) return setError(`${code} isn't a postcode district in England. Only England postcodes are currently accepted.`)
     } catch {
       return setError("The list of postcodes couldn't be loaded. Check your connection and try again.")
     }

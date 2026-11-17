@@ -1,7 +1,7 @@
 // Where the figures come from (SPEC §6 and §7). The gauge list and postcode districts come from
 // Hindcaster's site (option A, John, November 17th 2026), with this site's own copy as a safety
-// net (public/data/, refreshed monthly by .github/workflows/copy-gauges.yml). The readings come
-// straight from the Environment Agency, asked by the visitor's own browser.
+// net (public/data/, copied by hand for now; a monthly job to refresh it is still to be built).
+// The readings come straight from the Environment Agency, asked by the visitor's own browser.
 
 export type Gauge = { id: string; live: string; m?: string; name: string; line: string; e: number; n: number }
 export type GaugeFile = { made: string; credits: string[]; gauges: Gauge[] }
@@ -48,11 +48,13 @@ export function loadLists() {
 type Item = { dateTime: string; value: unknown; measure?: string }
 
 /** One gauge's readings since `since`: by its 15-minute series when known (usually under a
- *  second), otherwise by its station (slower), choosing the series as Hindcaster does. */
+ *  second when the answer is shared, 2 to 13 seconds when it is fresh; given up after 20 seconds,
+ *  fresh look 3.2), otherwise by its station (slower, so 30),
+ *  choosing the series as Hindcaster does. */
 export async function readings(g: Gauge, since: string, signal?: AbortSignal): Promise<{ t: number; v: unknown }[]> {
   const toReadings = (items: Item[]) => items.map((i) => ({ t: Date.parse(i.dateTime), v: i.value }))
   if (g.m) {
-    const res = await getJson<{ items: Item[] }>(`${EA}/id/measures/${encodeURIComponent(g.m)}/readings?since=${since}&_sorted&_limit=2000`, 30_000, signal)
+    const res = await getJson<{ items: Item[] }>(`${EA}/id/measures/${encodeURIComponent(g.m)}/readings?since=${since}&_sorted&_limit=2000`, 20_000, signal)
     return toReadings(res.items)
   }
   const res = await getJson<{ items: Item[] }>(`${EA}/id/stations/${encodeURIComponent(g.live)}/readings?since=${since}&_sorted&_limit=10000`, 30_000, signal)

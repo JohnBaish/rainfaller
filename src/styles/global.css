@@ -299,7 +299,11 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 .recent { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .recent-btn { display: inline-flex; align-items: stretch; border: 1px solid var(--color-divider); border-radius: 999px; overflow: hidden; }
 .recent-btn button { background: none; border: 0; font: inherit; color: var(--color-text); cursor: pointer; padding: 8px 12px; min-height: 40px; }
-.recent-btn .x { color: var(--color-neutral-700); padding: 8px 12px 8px 4px; }
+.recent-btn .x { color: var(--color-neutral-700); padding: 8px 12px 8px 4px; min-width: 44px; } /* a 44px tap area (fresh look 4.1) */
+.far-note { margin: 0 0 var(--space-3); }
+/* The colour key under "Rain today": dark mode only, where the edges are (fresh look 5.1). */
+.dark-only { display: none; }
+@media screen { :root[data-theme="dark"] .dark-only { display: inline; } }
 .illus { margin: var(--space-4) 0 0; padding: var(--space-2) var(--space-3); border: 1px dashed var(--color-accent); border-radius: var(--radius-sm); }
 /* Colour by state (HOUSE-STYLE §2; John, November 17th 2026): in dark mode, each gauge
    edged blue when today is wetter than its fortnight's average by this time, sand when

@@ -178,3 +178,36 @@ in Chromium at 1200px, 390px and 844×390 with touch, light and dark, no errors,
 in layout C (clockwheel's `landing.html`, merged there at John's word). `public/robots.txt` (allow all, with the sitemap)
 and `public/sitemap.xml` (the main address), as Hindcaster's. Next for John: Search Console, submit the sitemap and request
 indexing; then a fresh look in a new thread.
+
+### 2026-11-17 — fresh look, and the agreed fixes (live)
+
+Fresh look of the live site at `8d9119e` (report sent as a PDF, nothing changed during the review). Figures
+checked by hand against the Environment Agency's raw readings for six gauges: all matched. John's decisions,
+all built and merged the same day at his word ("make them live in your own time"):
+- **2.1** readings could lag up to 30 minutes (the EA's shared cache, copies up to 11 minutes old) and Refresh
+  got the same copy. *Option b:* `askSince(now, askSeconds(now, refresh))` adds a few seconds to the start
+  time, changing every 15 minutes on opening and every second on Refresh (always under 15 minutes, so no
+  reading is lost). Fresh answers take 2 to 13 seconds (tested, 36 gauges), cached under a second.
+- **2.2** summary counts didn't match the eight listed. *Option b:* always out of all listed, plus "One
+  gauge's readings are late or missing." (failed and late gauges now passed to `summary()`).
+- **2.3** odd sentences ("one of the one gauges", "All two gauges", "3.0 to 3.0 mm", ties). Claude's wording.
+- **2.4** a stopped gauge said "No readings since midnight yet." Now "Latest reading 6pm yesterday".
+- **2.5** just after midnight: yesterday's total per gauge and in the summary (`yesterdayWhole`,
+  `yesterdayEnd`, `yesterdayComplete` in `rain.ts`).
+- **2.6** dry day: no average sentence. **2.7** no bar at 0.0 mm. **2.8** full stop after the credits.
+- **3.1** every gauge failed: top line "Couldn't reach the Environment Agency. Press Refresh to try again."
+- **3.2** give up after 15 seconds, agreed; **made 20** because fresh answers (2.1) take up to 13 seconds.
+  Flagged to John. **3.3** Hindcaster hanging (10-second wait): left.
+- **4.1** × on recent places 44px wide. **4.2** one wording for Welsh postcodes (place view's order).
+- **4.3** *option a:* "The nearest gauges are some way off, so may not reflect the rain here." when the
+  nearest gauge is more than 20 miles away.
+- **5.1** *option a:* dark-mode-only key after the line above the list.
+- **6.1** Hindcaster's footer links to Rainfaller (in `JohnBaish/hindcaster`); tracker idea to look at more
+  prominent cross-promotion. **6.2** out-of-date notes in `index.html` and `load.ts` fixed.
+- 7.1–7.10 (figures, midnight, quiet gauges, postcodes, recent places, Back, layout, lists, text, search):
+  left alone, fine.
+
+**Verified:** checks 19 of 19 (new ones for each rule above), lint, build; against `vite preview` with real EA
+readings for RG4, TR21 and NE66 at 1200px, 390px and 844×390 with touch, light and dark, and forced states (a
+failed, stopped and slow gauge, EA down, a dry day, just after midnight): wording as above, no sideways scroll,
+no page errors (only Vercel's local statistics 404). Not checked: a real iPhone, a real midnight.

@@ -73,6 +73,27 @@ A small bar beside each "Today" figure, as Hindcaster's gauge lists have.
 mode: each gauge edged blue when today is wetter than its fortnight's average by
 this time, sand when drier, none when the same, without an average or failed.
 
+**Agreed after the fresh look (John, November 17th 2026):**
+
+- Counts in the summary are always out of all the gauges listed (2.2, option b),
+  with a sentence when some are late or missing: "There was rain in the last hour
+  at one of the eight gauges, Benson, recording 0.4 mm. One gauge's readings are
+  late or missing." With no rain at the rest: "Two gauges' readings are late or
+  missing. There was no rain in the last hour at the other six gauges."
+- Claude's wording for one or two gauges and ties (2.3): "both gauges", "either
+  gauge", "the higher of the two", "…at three of the eight gauges, A, B and C, each
+  recording 0.1 mm", "All eight gauges have recorded 2.0 mm so far today."
+- No comparison with the average on a dry day (2.6), and no bar at 0.0 mm (2.7).
+- A gauge more than an hour behind with nothing today: "Latest reading 6pm
+  yesterday" (2.4).
+- Just after midnight, before today's readings arrive: each gauge shows
+  "Yesterday: 12.3 mm" (or "Yesterday to 11.45pm: …"), and the summary "No readings
+  from today have arrived yet. Yesterday's rainfall ranged from 2.0 to 9.0 mm." (2.5).
+- When the nearest gauge is more than 20 miles away, above the summary: "The
+  nearest gauges are some way off, so may not reflect the rain here." (4.3).
+- In dark mode, after the line above the list: "A blue edge means wetter than the
+  fortnight's average by this time; sand, drier." (5.1).
+
 ## 4. Compared with the last fortnight and yesterday
 
 **Agreed (John, November 17th 2026):** both the fortnight's average by this
@@ -119,6 +140,13 @@ not be.
 - **Agreed:** the page asks for readings when it's opened, and again only when
   **Refresh** is pressed. Nothing refreshes by itself.
 - A line at the top: "Readings to 2.45pm. Checked at 3.10pm."
+- **Agreed after the fresh look (John, November 17th 2026, 2.1 option b):** the
+  Environment Agency hands out shared copies of answers, sometimes more than 10
+  minutes old. So the question is varied by a few seconds every 15 minutes (visitors
+  in the same quarter-hour still share an answer), and Refresh always asks afresh.
+  A fresh answer takes 2 to 13 seconds (tested), so a gauge is given up after 20
+  seconds (3.2): "Couldn't get this gauge's readings." If every gauge fails, the top
+  line says "Couldn't reach the Environment Agency. Press Refresh to try again." (3.1)
 
 ## 6. Where the figures come from
 

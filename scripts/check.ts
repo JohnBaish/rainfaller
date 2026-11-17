@@ -3,7 +3,7 @@
 
 import { clock, miles, mm, oneDecimal } from '../src/lib/format.ts'
 import { outwardCode } from '../src/lib/place.ts'
-import { askSince, figures, MIN_DAYS } from '../src/lib/rain.ts'
+import { askSeconds, askSince, figures, MIN_DAYS } from '../src/lib/rain.ts'
 import { state, summary } from '../src/lib/summary.ts'
 import { ukInstant } from '../src/lib/ukTime.ts'
 
@@ -61,6 +61,22 @@ check('postcodes', () => {
 check('ask since: midnight 14 days back, BST and GMT', () => {
   eq(askSince(new Date(at('2026-11-17', 10))), '2026-11-03T00:00:00Z')
   eq(askSince(new Date(at('2026-07-20', 10))), '2026-07-05T23:00:00Z')
+  eq(askSince(new Date(at('2026-11-17', 10)), 47), '2026-11-03T00:00:47Z')
+  eq(askSince(new Date(at('2026-11-17', 10)), 5000), '2026-11-03T00:14:59Z') // never past the first reading
+})
+
+check('ask seconds: the same all quarter-hour on opening, different on each Refresh', () => {
+  const a = askSeconds(new Date(at('2026-11-17', 10, 1)), false)
+  eq(askSeconds(new Date(at('2026-11-17', 10, 14)), false), a)
+  eq(askSeconds(new Date(at('2026-11-17', 10, 16)), false) === a, false)
+  const r1 = askSeconds(new Date(at('2026-11-17', 10, 1)), true)
+  eq(askSeconds(new Date(at('2026-11-17', 10, 1) + 1000), true) === r1, false)
+  for (let t = 0; t < 86_400_000; t += 7_777_000) {
+    for (const refresh of [false, true]) {
+      const v = askSeconds(new Date(at('2026-11-17', 0) + t), refresh)
+      if (v < 0 || v >= 900) throw new Error(`out of range ${v}`)
+    }
+  }
 })
 
 check('today, last hour, the midnight reading belongs to yesterday', () => {
@@ -109,6 +125,18 @@ check('no readings since midnight', () => {
   eq(figures([{ t: at('2026-11-17', 0), v: 1 }], now).today, null)
 })
 
+check('just after midnight: the whole of yesterday', () => {
+  const rs = [...series('2026-11-16', 0, 23, 45, 0.1), { t: at('2026-11-17', 0), v: 0.5 }]
+  const f = figures(rs, new Date(at('2026-11-17', 0, 20)))
+  eq(f.today, null)
+  eq(f.yesterdayWhole, 10) // 95 readings of 0.1 and 0.5 at midnight
+  eq(f.yesterdayComplete, true)
+  const g = figures(rs.slice(0, -1), new Date(at('2026-11-17', 0, 20)))
+  eq(g.yesterdayWhole, 9.5)
+  eq(g.yesterdayComplete, false)
+  eq(g.yesterdayEnd, at('2026-11-16', 23, 45))
+})
+
 check('state', () => {
   eq(state(1.04, 1.0), null) // both shown as 1.0
   eq(state(1.2, 1.0), 'wetter')
@@ -133,13 +161,48 @@ check("summary: John's wording", () => {
 
 check('summary: one gauge, ties, no rain, some without an average', () => {
   eq(summary([g('A', 0.2, 1, null), g('B', 0, 0, 0.5)])[0], 'There was rain in the last hour at one of the two gauges, A, recording 0.2 mm.')
-  eq(summary([g('A', 0.2, 1, 0.5), g('B', 0.2, 2, 0.5)])[0], 'There was rain in the last hour at both gauges, the highest of them, at A and B, recording 0.2 mm.')
+  eq(summary([g('A', 0.2, 1, 0.5), g('B', 0.2, 2, 0.5)])[0], 'There was rain in the last hour at both gauges, each recording 0.2 mm.')
+  eq(summary([g('A', 0.3, 1, 0.5), g('B', 0.2, 2, 0.5)])[0], 'There was rain in the last hour at both gauges, the higher of the two, at A, recording 0.3 mm.')
   eq(summary([g('A', 0, 0, 0.5), g('B', 0, 0, 0.5)]), [
-    'There was no rain in the last hour at any of the two gauges.',
-    "None of the two gauges has recorded any rain so far today. None of the two gauges had recorded more than the fortnight's average by this time.",
+    'There was no rain in the last hour at either gauge.',
+    'Neither gauge has recorded any rain so far today.',
   ])
   eq(summary([g('A', 0, 2, 0.5), g('B', 0, 1, null), g('C', 0, 0.1, 0.5)])[1],
-    "The range of rainfall recorded so far today is 0.1 to 2.0 mm. One of the two gauges with an average had recorded more than the fortnight's average by this time.")
+    "The range of rainfall recorded so far today is 0.1 to 2.0 mm. One of the three gauges had recorded more than the fortnight's average by this time.")
+})
+
+const eight = (f: (i: number) => ReturnType<typeof g>) => [0, 1, 2, 3, 4, 5, 6, 7].map(f)
+const names = 'ABCDEFGH'
+
+check('summary: late or missing gauges are counted among the eight', () => {
+  const gs = eight((i) => (i < 2 ? g(names[i], null, i === 0 ? null : 3, null) : g(names[i], 0, 3, 0.5)))
+  eq(summary(gs), [
+    "Two gauges' readings are late or missing. There was no rain in the last hour at the other six gauges.",
+    "The seven gauges with readings today have all recorded 3.0 mm so far. Six of the eight gauges had recorded more than the fortnight's average by this time.",
+  ])
+  const wet = eight((i) => (i === 0 ? g('A', null, 3, 0.5) : g(names[i], i === 3 ? 0.4 : 0, 3 + i, 0.5)))
+  eq(summary(wet)[0], "There was rain in the last hour at one of the eight gauges, D, recording 0.4 mm. One gauge's readings are late or missing.")
+  eq(summary(eight((i) => g(names[i], null, null, null))), ['The readings for all eight gauges are late or missing.'])
+})
+
+check('summary: equal figures and ties', () => {
+  eq(summary(eight((i) => g(names[i], 0, 2, 0.5)))[1], "All eight gauges have recorded 2.0 mm so far today. All eight gauges had recorded more than the fortnight's average by this time.")
+  eq(summary(eight((i) => g(names[i], i < 3 ? 0.1 : 0, 2 + i, 0.5)))[0], 'There was rain in the last hour at three of the eight gauges, A, B and C, each recording 0.1 mm.')
+  eq(summary(eight((i) => g(names[i], 0.1, 2 + i, 0.5)))[0], 'There was rain in the last hour at all eight gauges, each recording 0.1 mm.')
+  eq(summary(eight((i) => g(names[i], i < 4 ? (i < 2 ? 0.4 : 0.1) : 0, 2 + i, 0.5)))[0],
+    'There was rain in the last hour at four of the eight gauges, the highest of them, at A and B, recording 0.4 mm.')
+})
+
+check('summary: one gauge with an average', () => {
+  eq(summary(eight((i) => g(names[i], 0, 2 + i, i === 0 ? 5 : null)))[1],
+    "The range of rainfall recorded so far today is 2.0 to 9.0 mm. The one gauge with an average, A, hadn't recorded more than the fortnight's average by this time.")
+})
+
+check('summary: just after midnight, yesterday instead', () => {
+  const y = (name: string, whole: number | null) => ({ ...g(name, 0, null, null), yesterdayWhole: whole })
+  eq(summary(eight((i) => y(names[i], 2 + i)))[1], "No readings from today have arrived yet. Yesterday's rainfall ranged from 2.0 to 9.0 mm.")
+  eq(summary(eight((i) => y(names[i], 0)))[1], 'No readings from today have arrived yet. Yesterday, all eight gauges recorded no rain.')
+  eq(summary(eight((i) => y(names[i], null))).length, 1)
 })
 
 console.log(`${passed} passed, ${failed} failed`)
