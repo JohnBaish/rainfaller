@@ -1,6 +1,6 @@
 # Rainfaller — working notes
 
-**How much rain has fallen near you today, gauge by gauge.** A sister to
+**How much rain has fallen nearby, so far today?** A sister to
 Hindcaster (`JohnBaish/hindcaster`, yesterday's weather), Clockmaker and
 Backtimer (`JohnBaish/clockwheel`) and the other baish.net tools. Proposed
 address `rainfaller.baish.net`. The repo is public.
@@ -147,3 +147,10 @@ offered by the companion baish.net website Hindcaster: …". Otherwise agreed; o
 `design/previews/og-rainfaller.png`, 1200×630, both fonts confirmed loaded): the drop large on the pale disc, "Rainfaller"
 and the agreed tagline "How much rain has fallen near you today, gauge by gauge." Waiting for John before it goes into
 `public/` with the `og:` and `twitter:` tags.
+
+### 2026-11-17 — new tagline; link-preview picture and tags in (branch `stage-3-page`)
+
+**John:** the tagline is now "How much rain has fallen nearby, so far today?" (replacing "How much rain has fallen near you
+today, gauge by gauge."), everywhere. `public/og-rainfaller.png` (from `design/og-rainfaller.html`); `index.html` has the
+canonical address, `og:` and `twitter:` tags (description = the tagline) and a search description starting with it (draft,
+under Google's usual 155 characters). SPEC, PLAN and this file's heading updated.

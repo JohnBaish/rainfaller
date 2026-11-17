@@ -15,7 +15,9 @@ Hindcaster's repo; moved here the same day. The data tests behind it are in
 because Hindcaster is about yesterday and this is about today. The name
 **Rainfaller** is agreed. The chooser's heading is "Rainfall nearby" (John,
 November 17th 2026, replacing the earlier tagline "How much rain has fallen
-near you today, gauge by gauge."); the link-preview wording is settled in stage 4.
+near you today, gauge by gauge."). The tagline, used in the link preview and the
+search description, is "How much rain has fallen nearby, so far today?" (John,
+November 17th 2026, stage 4).
 
 Address: `rainfaller.baish.net` (proposed). Repo: `JohnBaish/rainfaller`,
 public (made by John, November 17th 2026).
