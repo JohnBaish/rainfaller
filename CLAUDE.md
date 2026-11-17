@@ -10,7 +10,8 @@ Read these first, in this order:
 1. `SPEC.md`: what Rainfaller does (a draft being agreed with John; the
    numbered questions are at the end).
 2. `HOUSE-STYLE.md`: the shared look and ways of working. Copied from
-   `JohnBaish/clockwheel` at commit `f8c4aff` (November 17th 2026), with
+   `JohnBaish/clockwheel` at commit `f8c4aff` (November 17th 2026; `HOUSE-STYLE.md`
+   re-copied at `ba9c802` the same day for §17), with
    `SEO-HANDOVER.md` and `.claude/skills/fresh-look/`. Clockwheel holds the
    master copies; re-copy them if they change, and note it here.
 3. `design/quicker-rain-2026-11-17.md`: the first tests of the Environment
@@ -104,3 +105,19 @@ mode each gauge (table row or card) is edged blue (`#6a98c6`) when today is wett
 by this time, sand (`#d8b46e`) when drier, none otherwise (Hindcaster's year-ago colours). The edge illustration
 now also shows a drier gauge. SPEC updated. Pictures re-rendered (edge pictures in dark added): no errors, no
 sideways scroll.
+
+### 2026-11-17 — house style re-copied (notes only, straight to `main`)
+
+From clockwheel `ba9c802`, at John's request: the new §17, "Sharing a picture" (every Share button sends a sentence, a
+link to the same place sent separately, and a title; each sentence agreed with John as part of the design; dates rather
+than "today"; a full postcode cut to its first half), and a line in §16 step 9 pointing to it. No other change; no code.
+
+### 2026-11-17 — stage 2 done: Hindcaster publishes the gauge files (notes only, straight to `main`)
+
+At John's word, straight to Hindcaster's `main` (its commit `28ce64c`): `https://hindcaster.baish.net/rainfaller/gauges.json`
+(the gauges Hindcaster offers less those held back that day: `id`, `live`, `m` the 15-minute series, `name`, `line`, `e`, `n`
+in British National Grid metres; plus `made` and `credits`) and `/rainfaller/outcodes.json` (`[easting, northing, place]` per
+postcode district). Remade with every Hindcaster update. Checked live: both 200, `access-control-allow-origin: *`,
+`cache-control: public, max-age=300`. Ask the EA by `m` (`/id/measures/<m>/readings?since=…`); if a gauge has no `m`, by
+station (`/id/stations/<live>/readings`). The mock-ups (stage 1) are on branch `stage-1-mockups`, agreed apart from
+building them.
