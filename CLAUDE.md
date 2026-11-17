@@ -85,3 +85,13 @@ can carry it).
 
 **Verified:** no page errors, no sideways scroll at any size, all four brand fonts loaded. Fonts were loaded by
 path at render time (they come with the app's build later). Not merged.
+
+### 2026-11-17 — mock-ups: John's wording (branch `stage-1-mockups`)
+
+**John:** the summary reworded ("There was rain in the last hour at four of the eight gauges, the highest of them, at
+Yattendon, recording 0.4 mm." / "The range of rainfall recorded so far today is 8.2 to 13.7 mm. All eight gauges had
+recorded more than the fortnight's average by this time."), the strip "RG4 · EIGHT GAUGES NEAREST TO CAVERSHAM", the
+chooser's heading "Rainfall nearby" and its paragraph reworded; drafts 2 to 4 agreed. Done in the mock and `SPEC.md`,
+with drafts for one gauge, ties, no rain and gauges without an average (the edge illustration shows a tie). Dark mode
+checked against HOUSE-STYLE §2: page `#24211e`, cards `#37332e` with the shadow, as agreed on November 14th. Pictures
+re-rendered: no errors, no sideways scroll, fonts loaded.

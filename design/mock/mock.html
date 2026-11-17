@@ -71,14 +71,29 @@ const lo = Math.min(...ok.map((r) => r.today)), hi = Math.max(...ok.map((r) => r
 const above = ok.filter((r) => r.avg !== null && r.today > r.avg).length;
 const withAvg = ok.filter((r) => r.avg !== null).length;
 
+// John's wording (November 17th 2026); the variants for one gauge, ties, no rain and
+// gauges without an average are Claude's drafts in the same pattern.
+const cap = (s) => s[0].toUpperCase() + s.slice(1);
+const list = (xs) => (xs.length < 2 ? xs.join('') : xs.slice(0, -1).join(', ') + ' and ' + xs[xs.length - 1]);
 function summary() {
+  const of = (k) => (k === ok.length ? `all ${n(k)}` : `${n(k)} of the ${n(ok.length)}`);
+  const top = one(upHour);
+  const topNames = wetHour.filter((r) => one(r.hour) === top).map((r) => esc(r.name));
   const hourLine = wetHour.length === 0
-    ? `No rain in the last hour at any of the ${n(ok.length)} gauges.`
-    : `Rain in the last hour at ${n(wetHour.length)} of the ${n(ok.length)} gauges, up to ${mm(upHour)}.`;
-  const aboveLine = above === withAvg && withAvg === ok.length
-    ? `More than the fortnight's average by this time at all ${n(ok.length)} gauges.`
-    : `More than the fortnight's average by this time at ${n(above)} of the ${n(ok.length)} gauges.`;
-  return `<p>${hourLine}</p><p>So far today: ${one(lo)} to ${mm(hi)}. ${aboveLine}</p>`;
+    ? `There was no rain in the last hour at any of the ${n(ok.length)} gauges.`
+    : wetHour.length === 1
+      ? `There was rain in the last hour at one of the ${n(ok.length)} gauges, ${topNames[0]}, recording ${top} mm.`
+      : `There was rain in the last hour at ${of(wetHour.length)} gauges, the highest of them, at ${list(topNames)}, recording ${top} mm.`;
+  const todayLine = hi === 0
+    ? `None of the ${n(ok.length)} gauges has recorded any rain so far today.`
+    : `The range of rainfall recorded so far today is ${one(lo)} to ${mm(hi)}.`;
+  const among = withAvg === ok.length ? `${n(ok.length)}` : `${n(withAvg)} gauges with an average`;
+  const aboveLine = above === withAvg
+    ? `All ${withAvg === ok.length ? n(ok.length) + ' gauges' : among} had recorded more than the fortnight's average by this time.`
+    : above === 0
+      ? `None of the ${among}${withAvg === ok.length ? ' gauges' : ''} had recorded more than the fortnight's average by this time.`
+      : `${cap(n(above))} of the ${among}${withAvg === ok.length ? ' gauges' : ''} had recorded more than the fortnight's average by this time.`;
+  return `<p>${hourLine}</p><p>${todayLine} ${aboveLine}</p>`;
 }
 
 function todayCell(r) {
@@ -120,7 +135,7 @@ const credit = `<p class="data-credit">This uses Environment Agency rainfall dat
 
 const recent = DATA.recent.map((p) => `<span class="recent-btn"><button type="button">${p}</button><button type="button" class="x" aria-label="Remove ${p}">×</button></span>`).join('');
 
-const chooser = `<div class="chooser-head"><span class="card-kicker">Rain today</span><h2>How much rain has fallen near you today, gauge by gauge.</h2></div>
+const chooser = `<div class="chooser-head"><span class="card-kicker">Rain today</span><h2>Rainfall nearby</h2></div>
   <div class="card" style="padding:var(--space-6);gap:var(--space-3)">
     <h3 style="margin:0;font-size:20px">Choose a place</h3>
     <div class="choose-row"><input class="input" placeholder="Postcode" aria-label="Postcode"><button class="btn btn-primary" type="button">Show</button></div>
@@ -128,9 +143,9 @@ const chooser = `<div class="chooser-head"><span class="card-kicker">Rain today<
     <p class="muted" style="margin:var(--space-2) 0 0">Recent places</p>
     <div class="recent">${recent}</div>
   </div>
-  <p class="chooser-about muted">The rain recorded so far today and in the last hour at the Environment Agency's rain gauges nearest you, with the fortnight's average and yesterday by the same time. Readings arrive every 15 minutes. Free to use.</p>`;
+  <p class="chooser-about muted">The rain recorded so far today and in the last hour at the nearest Environment Agency rain gauges, with the fortnight's average and the total by yesterday at the same time. Readings arrive every 15 minutes. Free to use.</p>`;
 
-const place = `<div class="card strip place-strip"><h2>${DATA.code} · ${esc(DATA.place)}</h2><button class="btn btn-secondary" type="button">Change</button></div>
+const place = `<div class="card strip place-strip"><h2>${DATA.code} · ${n(rows.length)} gauges nearest to ${esc(DATA.place)}</h2><button class="btn btn-secondary" type="button">Change</button></div>
   <div class="fresh"><p class="muted">Readings to ${DATA.cut}. Checked at ${DATA.checked}.</p><button class="btn btn-secondary" type="button">Refresh</button></div>
   <div class="card roundup">${summary()}</div>
   <section class="source">

@@ -13,8 +13,9 @@ Hindcaster's repo; moved here the same day. The data tests behind it are in
 
 **Agreed (John, November 17th 2026):** a new site, separate from Hindcaster,
 because Hindcaster is about yesterday and this is about today. The name
-**Rainfaller** and the tagline "How much rain has fallen near you today, gauge
-by gauge." are agreed.
+**Rainfaller** is agreed. The chooser's heading is "Rainfall nearby" (John,
+November 17th 2026, replacing the earlier tagline "How much rain has fallen
+near you today, gauge by gauge."); the link-preview wording is settled in stage 4.
 
 Address: `rainfaller.baish.net` (proposed). Repo: `JohnBaish/rainfaller`,
 public (made by John, November 17th 2026).
@@ -47,11 +48,22 @@ view, nearest first. For each:
 - the time of the latest reading ("to 2.45pm"). A gauge more than an hour
   behind is shown in grey with "Latest reading 11.15am".
 
-**Agreed:** one short summary line above the list, worked out from the eight:
+**Agreed (John, November 17th 2026, after the mock-ups):** the strip at the top
+reads "RG4 · EIGHT GAUGES NEAREST TO CAVERSHAM", and the summary above the list:
 
-- "Rain in the last hour at three of the eight gauges, up to 1.2 mm."
-- "No rain in the last hour at any of the eight gauges."
-- "So far today: 0.4 to 6.8 mm."
+- "There was rain in the last hour at four of the eight gauges, the highest of
+  them, at Yattendon, recording 0.4 mm."
+- "The range of rainfall recorded so far today is 8.2 to 13.7 mm. All eight
+  gauges had recorded more than the fortnight's average by this time."
+
+Drafts in the same pattern, for John: one gauge ("…at one of the eight gauges,
+Yattendon, recording 0.4 mm."), a tie ("…at Cleeve and Benson, recording
+0.1 mm."), no rain ("There was no rain in the last hour at any of the eight
+gauges."; "None of the eight gauges has recorded any rain so far today."), and
+some or none above the average ("Five of the eight gauges had…", "None of the
+eight gauges had…"; "…of the seven gauges with an average…" when one has too
+few days). Also agreed: the late gauge's "Not available" and "Latest reading
+7.45am", the failed gauge's sentence, and the line above the list.
 
 A small bar beside each "Today" figure, as Hindcaster's gauge lists have.
 
