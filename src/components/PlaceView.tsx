@@ -1,33 +1,26 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { clock, miles, mm, oneDecimal } from '../lib/format.ts'
-import { loadLists, readings, type Gauge } from '../lib/load.ts'
+import { loadLists, readings } from '../lib/load.ts'
 import { nearest } from '../lib/place.ts'
-import { askSeconds, askSince, figures, type GaugeFigures } from '../lib/rain.ts'
+import { askSeconds, askSince, figures } from '../lib/rain.ts'
 import { remember } from '../lib/recent.ts'
 import { state, summary } from '../lib/summary.ts'
 import { numberWord as n } from '../lib/words.ts'
+import { cmpRows, LATE, newestOf, pickShown, SHOWN, ASKED, type Row } from '../lib/nearby.ts'
+import { Compare } from './Compare.tsx'
 
 // A place's eight nearest reporting gauges (SPEC §3), each asked for its own readings by the
 // visitor's browser and shown as soon as they arrive (SPEC §6). Asked when the page opens and
 // again only when Refresh is pressed (SPEC §5).
 
-const SHOWN = 8
-/** Gauges asked for: a few more than shown, so a gauge that has gone quiet can be passed over. */
-const ASKED = 12
-/** A gauge with no reading for this long isn't reporting, and the next nearest takes its place. */
-const QUIET = 24 * 60 * 60_000
-/** A gauge this far behind the newest reading is shown in grey as running late. */
-const LATE = 60 * 60_000
-
-type Row = { gauge: Gauge; miles: number; dir: string; status: 'loading' | 'failed' | 'done'; fig?: GaugeFigures }
-
-export function PlaceView({ code }: { code: string }) {
+export function PlaceView({ code, compareWith, fromLink }: { code: string; compareWith: string | null; fromLink: boolean }) {
   const [place, setPlace] = useState<string | null>(null)
   const [credits, setCredits] = useState<string[]>([])
   const [rows, setRows] = useState<Row[] | null>(null)
   const [problem, setProblem] = useState<string | null>(null)
   const [checked, setChecked] = useState<number | null>(null)
   const [askedAt, setAskedAt] = useState(0)
+  const [refreshes, setRefreshes] = useState(0)
   const round = useRef(0)
 
   const ask = useCallback((list: Row[], refresh = false) => {
@@ -59,7 +52,8 @@ export function PlaceView({ code }: { code: string }) {
         if (!o) return setProblem(`${code} isn't a postcode district in England. Only England postcodes are currently accepted.`)
         setPlace(o[2])
         setCredits(gauges.credits)
-        remember({ code, place: o[2] })
+        // A link opening two places adds neither to recent places (John, November 17th 2026).
+        if (!fromLink) remember({ code, place: o[2] })
         const near = nearest({ e: o[0], n: o[1] }, gauges.gauges, (g) => g, ASKED)
         ask(near.map((x) => ({ gauge: x.item, miles: x.miles, dir: x.dir, status: 'loading' })))
       })
@@ -69,7 +63,7 @@ export function PlaceView({ code }: { code: string }) {
       live = false
       rounds.current++ // answers still arriving for this place are ignored
     }
-  }, [code, ask])
+  }, [code, ask, fromLink])
 
   if (problem) {
     return (
@@ -82,9 +76,9 @@ export function PlaceView({ code }: { code: string }) {
 
   // The nearest eight that are reporting: a gauge whose readings arrived but have nothing in
   // the last day gives way to the next nearest. One still loading or failed keeps its place.
-  const shown = (rows ?? []).filter((r) => !(r.status === 'done' && (r.fig?.latest == null || askedAt - r.fig.latest > QUIET))).slice(0, SHOWN)
+  const shown = pickShown(rows ?? [], askedAt)
   const done = shown.filter((r) => r.status === 'done' && r.fig)
-  const newest = Math.max(0, ...done.map((r) => r.fig!.latest ?? 0))
+  const newest = newestOf(shown)
   const late = (r: Row) => !!r.fig?.latest && newest - r.fig.latest > LATE
   const allIn = rows !== null && shown.every((r) => r.status !== 'loading')
   const most = Math.max(0, ...done.map((r) => r.fig!.today ?? 0))
@@ -159,7 +153,7 @@ export function PlaceView({ code }: { code: string }) {
             ? "Couldn't reach the Environment Agency. Press Refresh to try again."
             : checked && newest ? `Readings to ${clock(newest)}. Checked at ${clock(checked)}.` : 'Getting the latest readings…'}
         </p>
-        <button className="btn btn-secondary" type="button" disabled={!allIn} onClick={() => rows && ask(rows, true)} data-noprint>Refresh</button>
+        <button className="btn btn-secondary" type="button" disabled={!allIn} onClick={() => { if (rows) { ask(rows, true); setRefreshes((k) => k + 1) } }} data-noprint>Refresh</button>
       </div>
       {farOff && <p className="muted far-note">The nearest gauges are some way off, so may not reflect the rain here.</p>}
       {lines.length > 0 && <div className="card roundup">{lines.map((l) => <p key={l}>{l}</p>)}</div>}
@@ -193,6 +187,7 @@ export function PlaceView({ code }: { code: string }) {
         </div>
         <p className="data-credit">{credit}</p>
       </section>
+      <Compare code={code} place={place} first={allIn ? cmpRows(shown) : null} firstNewest={newest} checked={checked} refreshes={refreshes} initial={compareWith} credit={credit} />
       <AboutFigures />
     </>
   )

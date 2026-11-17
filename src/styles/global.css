@@ -325,3 +325,36 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
 .rf-about h3 { margin: 0 0 var(--space-3); font-size: 20px; }
 .rf-about p { margin: 0 0 var(--space-2); font-size: 14px; }
 @media (max-width: 720px) { .rf-about { padding: var(--space-4); } }
+
+/* Compare with another place (John, November 17th 2026). The two places' colours were checked with the dataviz
+   validator in both modes, including for colour-blind readers. */
+:root { --cmp0: #c67139; --cmp1: #4a78b5; }
+@media screen { :root[data-theme="dark"] { --cmp0: #d07a45; --cmp1: #5b93d8; } }
+.cmp { padding: var(--space-6); margin-top: var(--space-6); }
+.cmp h3 { margin: 0 0 var(--space-2); font-size: 20px; }
+.cmp-intro { margin: 0 0 var(--space-2); }
+.cmp-form { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); margin: var(--space-2) 0 var(--space-3); }
+.cmp-form .input { width: 150px; }
+.cmp .roundup { margin: var(--space-3) 0 var(--space-4); }
+.cmp-chart { margin: 0; }
+.cmp-chart h4 { margin: 0 0 2px; font-size: 16px; color: var(--color-text); }
+.cmp-sub { margin: 0 0 var(--space-2); font-size: 12.5px; color: var(--color-neutral-700); }
+.cmp-grp { display: flex; align-items: center; gap: 6px; margin: 12px 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--color-neutral-700); }
+.sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.sw0, .br0 { background: var(--cmp0); }
+.sw1, .br1 { background: var(--cmp1); }
+.cmp-row { display: grid; grid-template-columns: minmax(0, 190px) minmax(0, 1fr) 70px 78px; gap: 10px; align-items: center; font-size: 13.5px; padding: 3px 0; }
+.cmp-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cmp-row .v { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.cmp-head span { text-align: right; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--color-neutral-700); }
+.trk { position: relative; height: 12px; }
+.br { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; }
+.br.late { background: var(--color-neutral-300); }
+.cmp-axis { font-size: 11px; color: var(--color-neutral-700); margin-top: 4px; padding-top: 0; }
+.cmp-axis .ticks { display: flex; justify-content: space-between; border-top: 1px solid var(--color-divider); padding-top: 3px; }
+@media (max-width: 720px) {
+  .cmp { padding: var(--space-4); }
+  .cmp-row { grid-template-columns: minmax(0, 92px) minmax(0, 1fr) 58px 50px; gap: 6px; font-size: 12.5px; }
+  .cmp-head span:last-child { white-space: normal; line-height: 1.2; }
+}
+@media print { .cmp-form { display: none !important; } }

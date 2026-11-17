@@ -247,3 +247,20 @@ file once on github.com under his own account, as with Hindcaster, so GitHub run
 gauges nearest RG4 and PE38, from Rainfaller."); (4) a link opening both places (`#RG4/PE38`) that adds neither to recent
 places (opening a link to one place may still add it); (5) the comparison place isn't remembered. To build on a branch after
 the fresh look's fixes.
+
+### 2026-11-17 — compare two places, built (branch `compare-places`, not merged)
+
+**What:** "Compare with another place" at the foot of a place's page (`src/components/Compare.tsx`), as agreed: a postcode
+box; the summary (`compareSummary()` in `src/lib/compare.ts`, the wetter place first; "the seven gauges nearest PE38 with
+readings" when one has none; drafts for a place with no readings); one chart of rain so far today, each place's eight gauges
+on the same scale (`chartScale()`), the last hour as a number by each bar, a late gauge's bar grey; Copy chart / Share chart
+(`src/lib/shareImage.ts`, `ShareButton.tsx` from Hindcaster), a picture in the light colours (wide on a computer, tall on a
+phone), with the agreed sentence, the link `#RG4/PE38` and the title "Rainfaller: Rain so far today". The address holds the
+second place; opening such a link adds neither place to recent places (`fromLink`); the second place isn't stored. Refresh
+re-asks both places. The shown-gauge rules moved to `src/lib/nearby.ts`, shared with the place's own list. Drafts for John:
+the intro line, "That's RG4, the place already shown. Try another postcode.", the grey-bar note.
+**Verified:** checks 23 of 23 (new: summary, scale, date, sentence), lint clean, build; against `vite preview` with real EA
+readings, RG4 and PE38 at 1200px, 390px and 844×390 with touch, light and dark: no sideways scroll, no page errors, box 16px
+on touch, buttons 44px; the copied picture read back from the clipboard, and the phone picture saved (1440×2565); same,
+mistyped and Welsh postcodes give their messages; Clear removes the chart and the second place from the address. Not
+checked: a real phone's share sheet.

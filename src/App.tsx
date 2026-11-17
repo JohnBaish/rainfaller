@@ -5,12 +5,15 @@ import { ThemeSwitch } from './components/ThemeSwitch.tsx'
 import { outwardCode } from './lib/place.ts'
 import { recentPlaces } from './lib/recent.ts'
 
-// The address after "#" says what to show: "#RG4" for a place, "#choose" for the chooser.
-// With nothing there, the page opens on the last place chosen (SPEC §2), else the chooser.
-function fromHash(hash: string): string | null {
+// The address after "#" says what to show: "#RG4" for a place, "#RG4/PE38" for a place compared with another,
+// "#choose" for the chooser. With nothing there, the page opens on the last place chosen (SPEC §2), else the chooser.
+type View = { code: string | null; compare: string | null }
+function fromHash(hash: string): View {
   const h = decodeURIComponent(hash.replace(/^#/, ''))
-  if (h === 'choose') return null
-  return h ? outwardCode(h) : (recentPlaces()[0]?.code ?? null)
+  if (h === 'choose') return { code: null, compare: null }
+  if (!h) return { code: recentPlaces()[0]?.code ?? null, compare: null }
+  const [a, b] = h.split('/')
+  return { code: outwardCode(a), compare: b ? outwardCode(b) : null }
 }
 
 /** If a part of the page fails while drawing, a message instead of an empty page (HOUSE-STYLE §5). */
@@ -29,10 +32,11 @@ class SafetyNet extends Component<{ children: ReactNode }, { failed: boolean }> 
 }
 
 export default function App() {
-  const [code, setCode] = useState<string | null>(() => fromHash(location.hash))
+  const [view, setView] = useState<View>(() => fromHash(location.hash))
+  const { code, compare } = view
   useEffect(() => {
     const onHash = () => {
-      setCode(fromHash(location.hash))
+      setView(fromHash(location.hash))
       window.scrollTo(0, 0)
     }
     window.addEventListener('hashchange', onHash)
@@ -46,7 +50,7 @@ export default function App() {
         <div className="nav-right"><ThemeSwitch /></div>
       </nav>
       <main className="col screen">
-        <SafetyNet key={code ?? 'choose'}>{code ? <PlaceView code={code} /> : <Chooser />}</SafetyNet>
+        <SafetyNet key={code ?? 'choose'}>{code ? <PlaceView key={`${code}/${compare ?? ''}`} code={code} compareWith={compare} fromLink={!!compare} /> : <Chooser />}</SafetyNet>
         <footer className="footer-notice" data-noprint>
           Rainfaller is a free-to-use personal project by John Baish. Your device, rather than the website, stores your
           recent places and your choice of light or dark mode. To get the readings, your browser asks the Environment

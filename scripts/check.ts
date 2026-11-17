@@ -1,6 +1,7 @@
 // Checks of Rainfaller's rules (npm run check). Node runs this directly; no test framework.
 // The readings are made up to test the rules.
 
+import { chartScale, compareSummary, longDate, shareSentence, type CmpRow } from '../src/lib/compare.ts'
 import { clock, miles, mm, oneDecimal } from '../src/lib/format.ts'
 import { outwardCode } from '../src/lib/place.ts'
 import { askSeconds, askSince, figures, MIN_DAYS } from '../src/lib/rain.ts'
@@ -203,6 +204,38 @@ check('summary: just after midnight, yesterday instead', () => {
   eq(summary(eight((i) => y(names[i], 2 + i)))[1], "No readings from today have arrived yet. Yesterday's rainfall ranged from 2.0 to 9.0 mm.")
   eq(summary(eight((i) => y(names[i], 0)))[1], 'No readings from today have arrived yet. Yesterday, all eight gauges recorded no rain.')
   eq(summary(eight((i) => y(names[i], null))).length, 1)
+})
+
+const cr = (name: string, today: number | null, hour: number | null): CmpRow => ({ name, today, hour, late: false, failed: false })
+const eightOf = (vs: number[], h: number) => vs.map((v, i) => cr(`G${i}`, v, h))
+
+check("compare: John's summary, wetter place first", () => {
+  const rg4 = { code: 'RG4', place: 'Caversham', rows: eightOf([13, 9.7, 12.3, 9.1, 8.8, 12, 13.7, 12.9], 0.05) }
+  const pe38 = { code: 'PE38', place: 'Downham Market', rows: eightOf([28.2, 23.4, 20.6, 21.7, 23.6, 23.5, 27.2, 7.4], 0.1) }
+  eq(compareSummary(rg4, pe38), ['So far today the eight gauges nearest PE38 have averaged 22.0 mm, and those nearest RG4 11.4 mm. In the last hour: PE38 0.1 mm, RG4 0.1 mm.'])
+  eq(compareSummary(pe38, rg4)[0].startsWith('So far today the eight gauges nearest PE38'), true)
+})
+
+check('compare: gauges without readings, a place with none', () => {
+  const a = { code: 'RG4', place: null, rows: [cr('A', 2, 0), cr('B', null, null), cr('C', 4, null)] }
+  const b = { code: 'TR21', place: null, rows: [cr('D', null, null)] }
+  eq(compareSummary(a, b), ['So far today the two gauges nearest RG4 with readings have averaged 3.0 mm. There are no readings yet today from the gauges nearest TR21.'])
+  eq(compareSummary(b, { ...b, code: 'NE66' }), ['There are no readings yet today from the gauges nearest TR21 or NE66.'])
+})
+
+check('compare: chart scale', () => {
+  eq(chartScale(28.2), { max: 30, ticks: [0, 10, 20, 30] })
+  eq(chartScale(13.7), { max: 20, ticks: [0, 5, 10, 15, 20] })
+  eq(chartScale(0), { max: 1, ticks: [0, 0.5, 1] })
+  eq(chartScale(4.2), { max: 5, ticks: [0, 1, 2, 3, 4, 5] })
+})
+
+check('compare: date and the shared sentence', () => {
+  eq(longDate(at('2026-11-17', 11, 15)), 'Tuesday November 17th')
+  eq(longDate(at('2026-07-01', 0, 30)), 'Wednesday July 1st')
+  const p = (code: string, k: number) => ({ code, place: null, rows: eightOf(Array(k).fill(1), 0) })
+  eq(shareSentence(p('RG4', 8), p('PE38', 8), at('2026-11-17', 11)), 'Rain so far on Tuesday November 17th at the eight gauges nearest RG4 and PE38, from Rainfaller.')
+  eq(shareSentence(p('RG4', 8), p('PE38', 7), at('2026-11-22', 11)), 'Rain so far on Sunday November 22nd at the gauges nearest RG4 and PE38, from Rainfaller.')
 })
 
 console.log(`${passed} passed, ${failed} failed`)
