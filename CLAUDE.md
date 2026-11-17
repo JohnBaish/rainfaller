@@ -239,7 +239,8 @@ it; `HOUSE-STYLE.md` and the fresh-look `SKILL.md` re-copied. Run workflow only,
 each with an id, live id, name and position; at least 2,000 postcode districts), copies them into `public/data/` and commits to
 `main` only if they changed (they carry the time they were made, so in practice every month, which also keeps GitHub from
 switching the schedule off after 60 quiet days). A file that fails to download or check changes nothing. **For John:** save the
-file once on github.com under his own account, as with Hindcaster, so GitHub runs the schedule.
+file once on github.com under his own account, as with Hindcaster, so GitHub runs the schedule. **Trial run** by hand (run 44087361052): green, both files fetched and passed the checks
+(827 gauges, 2,210 postcode districts), "No change" as `public/data/` already held today's copy.
 
 **Comparing two places, John's answers:** (1) one chart, rain so far today, with the last hour as a number by each bar;
 (2) the summary sentences as drafted; (3) the share sentence as drafted ("Rain so far on Tuesday November 17th at the eight
