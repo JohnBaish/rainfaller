@@ -75,3 +75,13 @@ preview picture, 5 launch. No code yet.
 From clockwheel `ba9c802`, at John's request: the new §17, "Sharing a picture" (every Share button sends a sentence, a
 link to the same place sent separately, and a title; each sentence agreed with John as part of the design; dates rather
 than "today"; a full postcode cut to its first half), and a line in §16 step 9 pointing to it. No other change; no code.
+
+### 2026-11-17 — stage 2 done: Hindcaster publishes the gauge files (notes only, straight to `main`)
+
+At John's word, straight to Hindcaster's `main` (its commit `28ce64c`): `https://hindcaster.baish.net/rainfaller/gauges.json`
+(the gauges Hindcaster offers less those held back that day: `id`, `live`, `m` the 15-minute series, `name`, `line`, `e`, `n`
+in British National Grid metres; plus `made` and `credits`) and `/rainfaller/outcodes.json` (`[easting, northing, place]` per
+postcode district). Remade with every Hindcaster update. Checked live: both 200, `access-control-allow-origin: *`,
+`cache-control: public, max-age=300`. Ask the EA by `m` (`/id/measures/<m>/readings?since=…`); if a gauge has no `m`, by
+station (`/id/stations/<live>/readings`). The mock-ups (stage 1) are on branch `stage-1-mockups`, agreed apart from
+building them.
