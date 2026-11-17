@@ -164,3 +164,9 @@ clean). Then, at his request, mock-ups of the baish.net page with Rainfaller as 
 C the left panel's four rows made more compact and the panels the same height; plus 900px and 390px (A; the small icons,
 as now). Hub picture `rainfaller.webp` cropped from the link-preview picture as the others are. No errors, no sideways
 scroll. Waiting for John.
+
+### 2026-11-17 — baish.net layout: option C chosen (notes only)
+
+**John:** option C (the left panel's four rows a little more compact, all three panels the same height). To be built in
+clockwheel's `landing.html` when Rainfaller goes on the hub, after the site is live at rainfaller.baish.net. The fresh look
+to be run in a new thread. Waiting for John to say the domain is live.
