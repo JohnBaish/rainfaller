@@ -67,6 +67,10 @@ few days). Also agreed: the late gauge's "Not available" and "Latest reading
 
 A small bar beside each "Today" figure, as Hindcaster's gauge lists have.
 
+**Agreed (John, November 17th 2026): colour by state** (HOUSE-STYLE §2), in dark
+mode: each gauge edged blue when today is wetter than its fortnight's average by
+this time, sand when drier, none when the same, without an average or failed.
+
 ## 4. Compared with the last fortnight and yesterday
 
 **Agreed (John, November 17th 2026):** both the fortnight's average by this
@@ -166,9 +170,9 @@ not be.
   line in "About these figures" says so.
 - The three lines from OS Open Names, as on Hindcaster (for the place names
   and postcode districts).
-- **Agreed (footer):** "Your device, rather than the website, stores your
-  recent places. To get the readings, your browser asks the Environment Agency
-  directly." The Environment Agency sees the visitor's internet address and
+- **Agreed (footer, John, November 17th 2026):** "Your device, rather than the
+  website, stores your recent places and your choice of light or dark mode. To
+  get the readings, your browser asks the Environment Agency directly." The Environment Agency sees the visitor's internet address and
   which gauges were asked for, as for any website the browser contacts;
   nothing goes to baish.net beyond the usual anonymous visit statistics.
 

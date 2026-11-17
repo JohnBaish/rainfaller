@@ -95,3 +95,12 @@ chooser's heading "Rainfall nearby" and its paragraph reworded; drafts 2 to 4 ag
 with drafts for one gauge, ties, no rain and gauges without an average (the edge illustration shows a tie). Dark mode
 checked against HOUSE-STYLE §2: page `#24211e`, cards `#37332e` with the shadow, as agreed on November 14th. Pictures
 re-rendered: no errors, no sideways scroll, fonts loaded.
+
+### 2026-11-17 — mock-ups: footer and colour by state (branch `stage-1-mockups`)
+
+**John:** yes to the footer naming the light or dark choice, and yes to colour by state. **What:** the footer
+now reads "…stores your recent places and your choice of light or dark mode. To get the readings…"; in dark
+mode each gauge (table row or card) is edged blue (`#6a98c6`) when today is wetter than its fortnight's average
+by this time, sand (`#d8b46e`) when drier, none otherwise (Hindcaster's year-ago colours). The edge illustration
+now also shows a drier gauge. SPEC updated. Pictures re-rendered (edge pictures in dark added): no errors, no
+sideways scroll.
