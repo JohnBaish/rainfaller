@@ -267,3 +267,15 @@ checked: a real phone's share sheet.
 
 **Merged to `main` (2026-11-17)** at John's word, with one change: the intro line now reads "…another postcode alongside these
 eight, in a chart you can copy or share." The other drafts agreed as they were.
+
+### 2026-11-17 — the comparison fills in gauge by gauge (branch `compare-faster`, not merged)
+
+**John:** the second place took much longer to load. **Found** (timed on the live site): the chart waited for all 12 gauges
+asked for the second place (eight plus four spares) and for the first place to finish, and the Environment Agency's answers
+vary from under a second to 20 seconds, so one slow gauge held up the whole chart (one test: 21 seconds). **Fix:**
+`fetchPlace()` in `Compare.tsx` passes each answer on as it arrives; the chart shows as soon as both places' gauges are known,
+each bar appearing when its readings arrive ("…" until then), with "Getting the readings for PE38…" above; the summary and
+Copy/Share wait until every listed gauge has answered (the button is greyed out until then). `CmpRow` gains `loading`.
+**Verified:** checks 23, lint, build; with one Environment Agency answer held back 15 seconds on purpose, four PE38 bars
+showed within half a second, the summary and button 15.8 seconds later; the full earlier test again at 1200px, 390px and
+844×390 with touch, light and dark: all as before. Picture `design/previews/compare-built/filling-in.png`.

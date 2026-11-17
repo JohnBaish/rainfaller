@@ -187,7 +187,7 @@ export function PlaceView({ code, compareWith, fromLink }: { code: string; compa
         </div>
         <p className="data-credit">{credit}</p>
       </section>
-      <Compare code={code} place={place} first={allIn ? cmpRows(shown) : null} firstNewest={newest} checked={checked} refreshes={refreshes} initial={compareWith} credit={credit} />
+      <Compare code={code} place={place} first={rows ? cmpRows(shown) : null} firstNewest={newest} checked={checked} refreshes={refreshes} initial={compareWith} credit={credit} />
       <AboutFigures />
     </>
   )

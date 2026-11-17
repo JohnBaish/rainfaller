@@ -15,23 +15,28 @@ import { ShareButton } from './ShareButton.tsx'
 
 type Other = { code: string; place: string | null; rows: Row[]; askedAt: number }
 
-/** The second place's eight nearest reporting gauges, all asked at once. */
-async function fetchPlace(code: string, refresh: boolean): Promise<Other> {
+/** The second place's nearest gauges, all asked at once; `update` is called as each answer arrives, so the chart fills in
+ *  gauge by gauge rather than waiting for the slowest (some Environment Agency answers take up to 20 seconds). */
+async function fetchPlace(code: string, refresh: boolean, update: (o: Other) => void): Promise<void> {
   const { gauges, outcodes } = await loadLists()
   const o = outcodes.outcodes[code]
   if (!o) throw new Error('not England')
   const now = new Date()
   const since = askSince(now, askSeconds(now, refresh))
   const near = nearest({ e: o[0], n: o[1] }, gauges.gauges, (g) => g, ASKED)
-  const rows = await Promise.all(near.map(async (x): Promise<Row> => {
-    const base = { gauge: x.item, miles: x.miles, dir: x.dir }
+  let rows: Row[] = near.map((x) => ({ gauge: x.item, miles: x.miles, dir: x.dir, status: 'loading' }))
+  const send = () => update({ code, place: o[2], rows, askedAt: now.getTime() })
+  send()
+  await Promise.all(near.map(async (x) => {
+    let patch: Partial<Row>
     try {
-      return { ...base, status: 'done', fig: figures(await readings(x.item, since), now) }
+      patch = { status: 'done', fig: figures(await readings(x.item, since), now) }
     } catch {
-      return { ...base, status: 'failed' }
+      patch = { status: 'failed' }
     }
+    rows = rows.map((r) => (r.gauge.id === x.item.id ? { ...r, ...patch } : r))
+    send()
   }))
-  return { code, place: o[2], rows, askedAt: now.getTime() }
 }
 
 type Props = { code: string; place: string | null; first: CmpPlace['rows'] | null; firstNewest: number; checked: number | null; refreshes: number; initial: string | null; credit: string }
@@ -40,7 +45,6 @@ export function Compare({ code, place, first, firstNewest, checked, refreshes, i
   const [typed, setTyped] = useState(initial ?? '')
   const [other, setOther] = useState<string | null>(initial && initial !== code ? initial : null)
   const [data, setData] = useState<Other | null>(null)
-  const [settled, setSettled] = useState('')
   const [error, setError] = useState<string | null>(null)
   const round = useRef(0)
 
@@ -51,9 +55,7 @@ export function Compare({ code, place, first, firstNewest, checked, refreshes, i
     const refresh = refreshes !== lastRefresh.current
     lastRefresh.current = refreshes
     const mine = ++round.current
-    const key = `${other}:${refreshes}`
-    fetchPlace(other, refresh)
-      .then((d) => { if (round.current === mine) { setData(d); setError(null) } })
+    fetchPlace(other, refresh, (d) => { if (round.current === mine) { setData(d); setError(null) } })
       .catch((e: Error) => {
         if (round.current !== mine) return
         setData(null)
@@ -61,7 +63,6 @@ export function Compare({ code, place, first, firstNewest, checked, refreshes, i
           ? `${other} isn't a postcode district in England. Only England postcodes are currently accepted.`
           : "Couldn't get the readings for that place. Check your connection and try again.")
       })
-      .finally(() => { if (round.current === mine) setSettled(key) })
   }, [other, refreshes])
 
   function submit(e: FormEvent) {
@@ -85,12 +86,13 @@ export function Compare({ code, place, first, firstNewest, checked, refreshes, i
 
   const second: CmpPlace | null = data ? { code: data.code, place: data.place, rows: cmpRows(pickShown(data.rows, data.askedAt)) } : null
   const a: CmpPlace | null = first ? { code, place, rows: first } : null
-  const busy = !!other && settled !== `${other}:${refreshes}`
-  const ready = !!(a && second && !busy)
+  const shownBoth = a && second && second.code === other
+  const loading = !!shownBoth && [...a!.rows, ...second!.rows].some((r) => r.loading)
+  const ready = !!shownBoth && !loading
   const newest = Math.max(firstNewest, data ? newestOf(pickShown(data.rows, data.askedAt)) : 0)
   const when = checked && newest ? `${longDate(newest)}, readings to ${clock(newest)}` : ''
   const summary = ready ? compareSummary(a!, second!) : []
-  const { max, ticks } = chartScale(Math.max(0, ...(ready ? [...a!.rows, ...second!.rows] : []).map((r) => r.today ?? 0)))
+  const { max, ticks } = chartScale(Math.max(0, ...(shownBoth ? [...a!.rows, ...second!.rows] : []).map((r) => r.today ?? 0)))
 
   const share = () => {
     const at = newest
@@ -117,10 +119,10 @@ export function Compare({ code, place, first, firstNewest, checked, refreshes, i
         {other && <button className="btn btn-ghost" type="button" onClick={clear}>Clear</button>}
       </form>
       {error && <div className="choose-error" role="alert">{error}</div>}
-      {other && !error && !ready && <p className="rf-loading">Getting the readings for {other}…</p>}
-      {ready && (
+      {other && !error && !ready && <p className="rf-loading" aria-live="polite">Getting the readings for {other}…</p>}
+      {shownBoth && !error && (
         <>
-          <div className="card roundup">{summary.map((l) => <p key={l}>{l.replaceAll(' mm', '\u00a0mm')}</p>)}</div>
+          {ready && <div className="card roundup">{summary.map((l) => <p key={l}>{l.replaceAll(' mm', '\u00a0mm')}</p>)}</div>}
           <figure className="cmp-chart" aria-label={`Rain so far today at the gauges nearest ${code} and ${second!.code}`}>
             <figcaption>
               <h4>Rain so far today</h4>
@@ -136,8 +138,8 @@ export function Compare({ code, place, first, firstNewest, checked, refreshes, i
                     <div className="cmp-row" key={`${r.name}-${i}`} title={`${r.name}: ${v === null ? 'no readings today' : `${oneDecimal(v)} mm so far today`}${r.hour === null ? '' : `, ${oneDecimal(r.hour)} mm in the last hour`}`}>
                       <span className="nm">{r.name}</span>
                       <span className="trk">{v !== null && v > 0 && <span className={`br br${pi}${r.late ? ' late' : ''}`} style={{ width: `${Math.max(0.6, (Math.min(v, max) / max) * 100)}%` }} />}</span>
-                      <span className={`v${r.late || v === null ? ' muted' : ''}`}>{v === null ? (r.failed ? 'No readings' : '–') : `${oneDecimal(v)} mm`}</span>
-                      <span className="v muted">{r.hour === null ? '–' : `${oneDecimal(r.hour)} mm`}</span>
+                      <span className={`v${r.late || v === null ? ' muted' : ''}`}>{r.loading ? '…' : v === null ? (r.failed ? 'No readings' : '–') : `${oneDecimal(v)} mm`}</span>
+                      <span className="v muted">{r.loading ? '' : r.hour === null ? '–' : `${oneDecimal(r.hour)} mm`}</span>
                     </div>
                   )
                 })}
@@ -149,8 +151,8 @@ export function Compare({ code, place, first, firstNewest, checked, refreshes, i
               <span /><span />
             </div>
           </figure>
-          {a!.rows.some((r) => r.late) || second!.rows.some((r) => r.late) ? <p className="note">A grey bar is a gauge running late: its total is to its latest reading.</p> : null}
-          <div className="share-row" data-noprint><ShareButton what="chart" make={share} /></div>
+          {ready && (a!.rows.some((r) => r.late) || second!.rows.some((r) => r.late)) ? <p className="note">A grey bar is a gauge running late: its total is to its latest reading.</p> : null}
+          <div className="share-row" data-noprint><ShareButton what="chart" make={share} disabled={!ready} /></div>
         </>
       )}
     </section>

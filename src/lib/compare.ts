@@ -7,7 +7,7 @@ import { numberWord as n } from './words.ts'
 
 /** One gauge in the comparison: its name, rain since midnight and in the last hour (null when not
  *  known: no readings today, a late gauge's last hour, or a gauge that couldn't be reached). */
-export type CmpRow = { name: string; today: number | null; hour: number | null; late: boolean; failed: boolean }
+export type CmpRow = { name: string; today: number | null; hour: number | null; late: boolean; failed: boolean; loading?: boolean }
 export type CmpPlace = { code: string; place: string | null; rows: CmpRow[] }
 
 const shown = (v: number) => Number(oneDecimal(v))

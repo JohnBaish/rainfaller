@@ -28,6 +28,6 @@ export function cmpRows(shown: Row[]): CmpRow[] {
   return shown.map((r) => {
     const f = r.status === 'done' ? r.fig : undefined
     const late = !!f?.latest && newest - f.latest > LATE
-    return { name: r.gauge.name, today: f ? f.today : null, hour: f && !late ? f.hour : null, late, failed: r.status === 'failed' }
+    return { name: r.gauge.name, today: f ? f.today : null, hour: f && !late ? f.hour : null, late, failed: r.status === 'failed', loading: r.status === 'loading' }
   })
 }
