@@ -228,4 +228,6 @@ no page errors (only Vercel's local statistics 404). Not checked: a real iPhone,
 Found in the fresh look: this repo had no `.github/workflows/tidy-branches.yml`, which every baish.net repo has so a cloud
 session can delete merged branches (HOUSE-STYLE §10). Copied unchanged from clockwheel (`372c03c`). At John's request the
 house style now lists it among the files every new tool copies in its first thread (§1, §16), and the fresh look checks for
-it; `HOUSE-STYLE.md` and the fresh-look `SKILL.md` re-copied. Run workflow only, nothing scheduled.
+it; `HOUSE-STYLE.md` and the fresh-look `SKILL.md` re-copied. Run workflow only, nothing scheduled. Then run, trial first (run 44086955432: three merged branches, nothing unmerged) and for real (run 44087036335):
+`claude/vibrant-lovelace-2gxszt`, `stage-1-mockups` and `stage-3-page` deleted; only `main` left (checked with
+`git ls-remote --heads origin`).
