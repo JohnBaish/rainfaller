@@ -264,3 +264,6 @@ readings, RG4 and PE38 at 1200px, 390px and 844×390 with touch, light and dark:
 on touch, buttons 44px; the copied picture read back from the clipboard, and the phone picture saved (1440×2565); same,
 mistyped and Welsh postcodes give their messages; Clear removes the chart and the second place from the address. Not
 checked: a real phone's share sheet.
+
+**Merged to `main` (2026-11-17)** at John's word, with one change: the intro line now reads "…another postcode alongside these
+eight, in a chart you can copy or share." The other drafts agreed as they were.

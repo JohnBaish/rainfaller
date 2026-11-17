@@ -105,7 +105,7 @@ export function Compare({ code, place, first, firstNewest, checked, refreshes, i
   return (
     <section className="card cmp" aria-labelledby="cmp-h">
       <h3 id="cmp-h">Compare with another place</h3>
-      {!other && <p className="note cmp-intro">See the rain at the gauges nearest another postcode beside these, in a chart you can copy or share.</p>}
+      {!other && <p className="note cmp-intro">See the rain at the gauges nearest another postcode alongside these eight, in a chart you can copy or share.</p>}
       <form className="cmp-form" onSubmit={submit} data-noprint>
         <label htmlFor="cmp-pc">Compare {code} with</label>
         <input
