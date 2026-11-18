@@ -309,3 +309,6 @@ draft sentence on the chart. **Verified:** checks 27 of 27 (new: slots, the midn
 lint, build; against `vite preview` with real readings for BS48 and RG4 at 1200px (light and dark), 390px with touch (light and dark)
 and 844×390 with touch: eight charts, no sideways scroll, no page errors (only Vercel's local statistics 404), button 44px on touch;
 the copied picture read back from the clipboard, and the phone picture saved (1440×2359). Not checked: a real phone's share sheet.
+
+**Merged to `main` (2026-11-18)** at John's word ("All approved"), with the drafted wording as it was (the share sentence, the
+title "Rainfaller: Rain today" and the sentence in "About these figures"); checks 27 of 27, lint and build clean first.
