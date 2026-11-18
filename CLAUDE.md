@@ -311,4 +311,5 @@ and 844×390 with touch: eight charts, no sideways scroll, no page errors (only 
 the copied picture read back from the clipboard, and the phone picture saved (1440×2359). Not checked: a real phone's share sheet.
 
 **Merged to `main` (2026-11-18)** at John's word ("All approved"), with the drafted wording as it was (the share sentence, the
-title "Rainfaller: Rain today" and the sentence in "About these figures"); checks 27 of 27, lint and build clean first.
+title "Rainfaller: Rain today" and the sentence in "About these figures"); checks 27 of 27, lint and build clean first. Checked live (the new code is being served); branch deleted with
+the "Delete merged branches" job (trial run, then the real run); tracker updated.
