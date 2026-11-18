@@ -281,3 +281,15 @@ showed within half a second, the summary and button 15.8 seconds later; the full
 844×390 with touch, light and dark: all as before. Picture `design/previews/compare-built/filling-in.png`.
 
 **Merged to `main` (2026-11-17)** at John's word; branch deleted with the "Delete merged branches" job.
+
+### 2026-11-18 — how hard it rained: three mock-ups (design only, straight to `main`)
+
+**John** asked whether Rainfaller says anything about the intensity of the rain (it doesn't, beyond the last hour's
+total) and asked for mock-ups of the three ideas, to think about carefully. **What:** `design/intensity-mock/` (a patch to
+a scratch copy of the app, nothing in the app changed) and pictures in `design/previews/intensity/` from real readings at
+about 9.20pm, for BS48 (a wet day near Bristol) and RG4: (1) a word under the last hour (Slight/Moderate/Heavy/Very heavy,
+bands as quoted by the USGS from the Met Office's Fact sheet 3, not yet checked against the sheet itself); (2) "Heaviest 15
+minutes: 2.0 mm, to 7.45pm" under Today; (3) a strip of today's 15-minute readings, all gauges on one scale. **Found:** at
+BS48 every gauge read "Moderate" (0.5 to 4 mm an hour is a wide band); 13 of 20 gauges sampled record in steps of 0.2 mm,
+the rest in 0.01 or 0.1 mm. Checked at 1200px (light and dark), 390px and 844×390 with touch: no errors, no sideways
+scroll. Waiting for John.

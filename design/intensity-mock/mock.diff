@@ -1,0 +1,91 @@
+diff --git a/src/components/PlaceView.tsx b/src/components/PlaceView.tsx
+index b471de4..b09c1e5 100644
+--- a/src/components/PlaceView.tsx
++++ b/src/components/PlaceView.tsx
+@@ -8,6 +8,8 @@ import { state, summary } from '../lib/summary.ts'
+ import { numberWord as n } from '../lib/words.ts'
+ import { cmpRows, LATE, newestOf, pickShown, SHOWN, ASKED, type Row } from '../lib/nearby.ts'
+ import { Compare } from './Compare.tsx'
++import { band, heaviest, midnightOf, todays } from '../lib/intensity.ts'
++const OPT = new URLSearchParams(location.search).get('opt') ?? ''
+ 
+ // A place's eight nearest reporting gauges (SPEC §3), each asked for its own readings by the
+ // visitor's browser and shown as soon as they arrive (SPEC §6). Asked when the page opens and
+@@ -38,7 +40,7 @@ export function PlaceView({ code, compareWith, fromLink }: { code: string; compa
+     }
+     for (const r of list) {
+       readings(r.gauge, since)
+-        .then((raw) => settle(r.gauge.id, { status: 'done', fig: figures(raw, now) }))
++        .then((raw) => settle(r.gauge.id, { status: 'done', fig: figures(raw, now), today15: todays(raw, now), now: now.getTime() } as Partial<Row>))
+         .catch(() => settle(r.gauge.id, { status: 'failed' }))
+     }
+   }, [])
+@@ -82,6 +84,8 @@ export function PlaceView({ code, compareWith, fromLink }: { code: string; compa
+   const late = (r: Row) => !!r.fig?.latest && newest - r.fig.latest > LATE
+   const allIn = rows !== null && shown.every((r) => r.status !== 'loading')
+   const most = Math.max(0, ...done.map((r) => r.fig!.today ?? 0))
++  // One scale for every strip: the wettest 15 minutes among the eight, at least 1 mm.
++  const stripTop = Math.max(1, ...done.flatMap((r) => ((r as any).today15 ?? []).map((x: { v: number }) => x.v)))
+   // Every gauge listed counts (fresh look 2.2, option b): a failed gauge has no figures.
+   const lines = allIn
+     ? summary(shown.map((r) => {
+@@ -131,13 +135,16 @@ export function PlaceView({ code, compareWith, fromLink }: { code: string; compa
+         {late(r) && <div className="note">Latest reading {cut}</div>}
+         <div className="note">{f.average === null ? 'Not enough readings for an average' : `Fortnight average by ${cut}: ${mm(f.average)}`}</div>
+         {f.yesterday !== null && <div className="note">By {cut} yesterday: {mm(f.yesterday)}</div>}
++        {OPT === '2' && (() => { const h = heaviest((r as any).today15 ?? []); return h && <div className="note im-heavy">Heaviest 15 minutes: {mm(h.v)}, to {clock(h.t)}</div> })()}
++        {OPT === '3' && <Strip rs={(r as any).today15 ?? []} now={(r as any).now} top={stripTop} />}
+       </div>
+     )
+   }
+   const hourCell = (r: Row) => {
+     if (r.status !== 'done' || !r.fig) return null
+     if (late(r)) return <span className="muted">Not available</span>
+-    return <span className="mono">{mm(r.fig.hour ?? 0)}</span>
++    const b = OPT === '1' ? band(r.fig.hour ?? 0) : null
++    return <span className="mono">{mm(r.fig.hour ?? 0)}{b && <span className={`im-band im-${b.toLowerCase().replace(' ', '-')}`}>{b}</span>}</span>
+   }
+   const edge = (r: Row) => (r.status === 'done' && r.fig ? (state(r.fig.today, r.fig.average) ? `rf-${state(r.fig.today, r.fig.average)}` : '') : '')
+ 
+@@ -206,3 +213,25 @@ function AboutFigures() {
+     </section>
+   )
+ }
++
++// MOCK-UP: today's 15-minute readings, midnight to midnight, on one scale for all eight gauges.
++function Strip({ rs, now, top }: { rs: { t: number; v: number }[]; now: number; top: number }) {
++  const start = midnightOf(new Date(now))
++  const W = 96 * 3, H = 28
++  const upTo = Math.min(96, Math.ceil((now - start) / 900_000))
++  return (
++    <div className="im-strip">
++      <svg viewBox={`0 0 ${W} ${H + 1}`} preserveAspectRatio="none" role="img" aria-label="Rain in each 15 minutes today">
++        <rect x={0} y={H} width={upTo * 3} height={1} className="im-base" />
++        <rect x={upTo * 3} y={H} width={W - upTo * 3} height={1} className="im-future" />
++        {rs.map((r) => {
++          const slot = Math.round((r.t - start) / 900_000) - 1
++          if (r.v <= 0 || slot < 0 || slot >= 96) return null
++          const h = Math.max(1.5, (r.v / top) * H)
++          return <rect key={r.t} x={slot * 3} y={H - h} width={2} height={h} className="im-mark"><title>{`${mm(r.v)} in the 15 minutes to ${clock(r.t)}`}</title></rect>
++        })}
++      </svg>
++      <div className="im-axis"><span>midnight</span><span>6am</span><span>midday</span><span>6pm</span><span>midnight</span></div>
++    </div>
++  )
++}
+diff --git a/src/styles/global.css b/src/styles/global.css
+index 5f9d80e..831eadf 100644
+--- a/src/styles/global.css
++++ b/src/styles/global.css
+@@ -358,3 +358,11 @@ details summary { cursor: pointer; font-weight: 600; margin-bottom: var(--space-
+   .cmp-head span:last-child { white-space: normal; line-height: 1.2; }
+ }
+ @media print { .cmp-form { display: none !important; } }
++/* MOCK-UP ONLY: rain intensity options (November 18th 2026). */
++.im-band { display: block; font-family: var(--font-body, Figtree, sans-serif); font-size: 12.5px; color: var(--color-neutral-700); margin-top: 2px; }
++.im-strip { margin-top: 8px; max-width: 300px; }
++.im-strip svg { display: block; width: 100%; height: 30px; }
++.im-mark { fill: var(--color-accent); }
++.im-base { fill: var(--color-neutral-500); }
++.im-future { fill: var(--color-divider); }
++.im-axis { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--color-neutral-700); margin-top: 2px; }
