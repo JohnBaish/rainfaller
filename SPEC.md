@@ -94,6 +94,15 @@ this time, sand when drier, none when the same, without an average or failed.
 - In dark mode, after the line above the list: "A blue edge means wetter than the
   fortnight's average by this time; sand, drier." (5.1).
 
+**Agreed (John, November 18th 2026): a small chart of each gauge's day** (option 3 of
+the intensity mock-ups), under its Today figures: the rain in each 15 minutes from
+midnight to midnight, all the gauges on one scale (the wettest 15 minutes among them,
+at least 1 mm), with **Share charts** (Copy charts on a computer) under the list. The
+share sentence: "Rain in each 15 minutes on Wednesday November 18th at the eight gauges
+nearest BS48, from Rainfaller."; the title "Rainfaller: Rain today"; the link `#BS48`.
+"About these figures" adds: "The small chart under each gauge shows the rain in each
+15 minutes since midnight, with all the gauges on the same scale."
+
 ## 4. Compared with the last fortnight and yesterday
 
 **Agreed (John, November 17th 2026):** both the fortnight's average by this
