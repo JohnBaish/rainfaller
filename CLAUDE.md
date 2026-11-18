@@ -293,3 +293,19 @@ minutes: 2.0 mm, to 7.45pm" under Today; (3) a strip of today's 15-minute readin
 BS48 every gauge read "Moderate" (0.5 to 4 mm an hour is a wide band); 13 of 20 gauges sampled record in steps of 0.2 mm,
 the rest in 0.01 or 0.1 mm. Checked at 1200px (light and dark), 390px and 844×390 with touch: no errors, no sideways
 scroll. Waiting for John.
+
+### 2026-11-18 — a small chart of each gauge's day, with Share charts (branch `claude/zealous-wozniak-i0f8kb`, not merged)
+
+**John** chose option 3 of the mock-ups ("the graphs look great… good enough to share"), with a share button. **What:** under each
+gauge's Today figures, the rain in each 15 minutes from midnight to midnight (`src/lib/strip.ts`, `src/components/RainStrip.tsx`):
+all eight on one scale (the wettest 15 minutes among them, at least 1 mm), a solid line up to the gauge's latest reading and a faint
+one for the rest of the day, grey bars for a late gauge, none at 0.0 mm; 92 or 100 slots on the days the clocks change; times under
+it (on a phone only 6am, midday and 6pm, as the two "midnight"s ran into them); hovering over a bar with a mouse names its reading;
+a screen reader hears the heaviest 15 minutes. **Share charts** (Copy charts on a computer) under the list: a picture in the light
+colours (`stripImage()` in `src/lib/shareImage.ts`; on a phone each gauge's name and total above its chart, full width), with the
+sentence "Rain in each 15 minutes on Wednesday November 18th at the eight gauges nearest BS48, from Rainfaller.", the link `#BS48`
+and the title "Rainfaller: Rain today" (all drafts for John), file `rainfaller-BS48-2026-11-18.png`. "About these figures" gains a
+draft sentence on the chart. **Verified:** checks 27 of 27 (new: slots, the midnight reading, ties, clock changes, scale, sentence),
+lint, build; against `vite preview` with real readings for BS48 and RG4 at 1200px (light and dark), 390px with touch (light and dark)
+and 844×390 with touch: eight charts, no sideways scroll, no page errors (only Vercel's local statistics 404), button 44px on touch;
+the copied picture read back from the clipboard, and the phone picture saved (1440×2359). Not checked: a real phone's share sheet.

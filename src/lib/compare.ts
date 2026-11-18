@@ -64,3 +64,8 @@ export function shareSentence(a: CmpPlace, b: CmpPlace, at: number): string {
   const gauges = ka === kb ? `the ${n(ka)} gauges nearest ${a.code} and ${b.code}` : `the gauges nearest ${a.code} and ${b.code}`
   return `Rain so far on ${longDate(at)} at ${gauges}, from Rainfaller.`
 }
+
+/** The sentence sent with a place's charts (draft for John, November 18th 2026; HOUSE-STYLE §17). */
+export function stripSentence(code: string, gauges: number, at: number): string {
+  return `Rain in each 15 minutes on ${longDate(at)} at the ${n(gauges)} gauges nearest ${code}, from Rainfaller.`
+}

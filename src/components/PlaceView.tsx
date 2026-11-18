@@ -8,6 +8,11 @@ import { state, summary } from '../lib/summary.ts'
 import { numberWord as n } from '../lib/words.ts'
 import { cmpRows, LATE, newestOf, pickShown, SHOWN, ASKED, type Row } from '../lib/nearby.ts'
 import { Compare } from './Compare.tsx'
+import { ShareButton } from './ShareButton.tsx'
+import { deliver, stripImage } from '../lib/shareImage.ts'
+import { longDate, stripSentence } from '../lib/compare.ts'
+import { RainStrip } from './RainStrip.tsx'
+import { stripData, stripTop } from '../lib/strip.ts'
 
 // A place's eight nearest reporting gauges (SPEC §3), each asked for its own readings by the
 // visitor's browser and shown as soon as they arrive (SPEC §6). Asked when the page opens and
@@ -28,7 +33,7 @@ export function PlaceView({ code, compareWith, fromLink }: { code: string; compa
     const since = askSince(now, askSeconds(now, refresh))
     const mine = ++round.current
     setAskedAt(now.getTime())
-    setRows(list.map((r) => ({ ...r, status: 'loading', fig: undefined })))
+    setRows(list.map((r) => ({ ...r, status: 'loading', fig: undefined, strip: undefined })))
     setChecked(null)
     let left = list.length
     const settle = (id: string, patch: Partial<Row>) => {
@@ -38,7 +43,7 @@ export function PlaceView({ code, compareWith, fromLink }: { code: string; compa
     }
     for (const r of list) {
       readings(r.gauge, since)
-        .then((raw) => settle(r.gauge.id, { status: 'done', fig: figures(raw, now) }))
+        .then((raw) => settle(r.gauge.id, { status: 'done', fig: figures(raw, now), strip: stripData(raw, now) }))
         .catch(() => settle(r.gauge.id, { status: 'failed' }))
     }
   }, [])
@@ -82,6 +87,7 @@ export function PlaceView({ code, compareWith, fromLink }: { code: string; compa
   const late = (r: Row) => !!r.fig?.latest && newest - r.fig.latest > LATE
   const allIn = rows !== null && shown.every((r) => r.status !== 'loading')
   const most = Math.max(0, ...done.map((r) => r.fig!.today ?? 0))
+  const top = stripTop(done.map((r) => r.strip))
   // Every gauge listed counts (fresh look 2.2, option b): a failed gauge has no figures.
   const lines = allIn
     ? summary(shown.map((r) => {
@@ -102,6 +108,18 @@ export function PlaceView({ code, compareWith, fromLink }: { code: string; compa
     const t = `This uses Environment Agency rainfall data from the real-time data API (Beta). ${credits.join(' ')}`.trim()
     return /[.!?]$/.test(t) ? t : `${t}.`
   })()
+
+  const shareStrips = () => {
+    const pic = stripImage({
+      code, place, when: `${longDate(newest)}, readings to ${clock(newest)}`, top, credit,
+      rows: shown.map((r) => ({ name: r.gauge.name, today: r.fig?.today ?? null, late: late(r), failed: r.status === 'failed', strip: r.status === 'done' ? r.strip : undefined })),
+    })
+    return deliver(pic, `rainfaller-${code}-${new Date(newest).toISOString().slice(0, 10)}.png`, {
+      title: 'Rainfaller: Rain today',
+      text: stripSentence(code, shown.length, newest),
+      url: `${location.origin}/#${code}`,
+    })
+  }
 
   const todayCell = (r: Row) => {
     if (r.status === 'loading') return <span className="rf-loading">Getting readings…</span>
@@ -131,6 +149,7 @@ export function PlaceView({ code, compareWith, fromLink }: { code: string; compa
         {late(r) && <div className="note">Latest reading {cut}</div>}
         <div className="note">{f.average === null ? 'Not enough readings for an average' : `Fortnight average by ${cut}: ${mm(f.average)}`}</div>
         {f.yesterday !== null && <div className="note">By {cut} yesterday: {mm(f.yesterday)}</div>}
+        {r.strip && oneDecimal(f.today) !== '0.0' && <RainStrip data={r.strip} top={top} />}
       </div>
     )
   }
@@ -185,6 +204,9 @@ export function PlaceView({ code, compareWith, fromLink }: { code: string; compa
             </div>
           ))}
         </div>
+        {allIn && !allFailed && shown.length > 0 && (
+          <div className="share-row" data-noprint><ShareButton what="charts" make={shareStrips} /></div>
+        )}
         <p className="data-credit">{credit}</p>
       </section>
       <Compare code={code} place={place} first={rows ? cmpRows(shown) : null} firstNewest={newest} checked={checked} refreshes={refreshes} initial={compareWith} credit={credit} />
@@ -199,7 +221,7 @@ function AboutFigures() {
     <section className="card rf-about">
       <h3>About these figures</h3>
       <p>Readings come from the Environment Agency's rain gauges every 15 minutes, usually 20 to 45 minutes after the rain fell. They're provisional: the Environment Agency can correct them later.</p>
-      <p>Today is from midnight, UK time. ‘The last hour’ is defined as the aggregate of the four latest 15-minute readings.</p>
+      <p>Today is from midnight, UK time. ‘The last hour’ is defined as the aggregate of the four latest 15-minute readings. The small chart under each gauge shows the rain in each 15 minutes since midnight, with all the gauges on the same scale.</p>
       <p>The fortnight's average is the rain from midnight to the same time on each of the last 14 days, averaged. It includes dry days, so one wet day can lift it a lot. It's shown when at least ten of the 14 days have readings.</p>
       <p>The gauges are the ones offered by the companion baish.net website Hindcaster: checked each month against the Environment Agency's quality-checked figures, less any held back that day for disagreeing with the gauges around them. A 15-minute reading of more than 50 mm is left out.</p>
       <p>Rainfaller is an independent project, not connected with or endorsed by the Environment Agency.</p>

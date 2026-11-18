@@ -7,6 +7,8 @@ import { outwardCode } from '../src/lib/place.ts'
 import { askSeconds, askSince, figures, MIN_DAYS } from '../src/lib/rain.ts'
 import { state, summary } from '../src/lib/summary.ts'
 import { ukInstant } from '../src/lib/ukTime.ts'
+import { stripData, stripTop } from '../src/lib/strip.ts'
+import { stripSentence } from '../src/lib/compare.ts'
 
 let failed = 0
 let passed = 0
@@ -236,6 +238,41 @@ check('compare: date and the shared sentence', () => {
   const p = (code: string, k: number) => ({ code, place: null, rows: eightOf(Array(k).fill(1), 0) })
   eq(shareSentence(p('RG4', 8), p('PE38', 8), at('2026-11-17', 11)), 'Rain so far on Tuesday November 17th at the eight gauges nearest RG4 and PE38, from Rainfaller.')
   eq(shareSentence(p('RG4', 8), p('PE38', 7), at('2026-11-22', 11)), 'Rain so far on Sunday November 22nd at the gauges nearest RG4 and PE38, from Rainfaller.')
+})
+
+check('strip: slots, the midnight reading belongs to yesterday, the heaviest is the latest if tied', () => {
+  const d = '2026-11-18'
+  const raw = [
+    { t: at(d, 0), v: 0.6 }, // stamped midnight: yesterday's
+    { t: at(d, 0, 15), v: 0.2 }, // midnight to 12.15am: slot 0
+    { t: at(d, 7, 45), v: 1.4 },
+    { t: at(d, 19, 45), v: 1.4 },
+    { t: at(d, 20, 0), v: 0 },
+  ]
+  const s = stripData(raw, new Date(at(d, 21)))
+  eq(s.slots, 96)
+  eq(s.marks.map((m) => m.slot), [0, 30, 78])
+  eq(s.upTo, 80)
+  eq(s.heaviest?.t, at(d, 19, 45))
+  eq(s.ticks.map((t) => t.slot), [24, 48, 72])
+})
+
+check('strip: the days the clocks change have 92 and 100 slots', () => {
+  eq(stripData([], new Date(at('2026-03-29', 12))).slots, 92)
+  eq(stripData([], new Date(at('2026-10-25', 12))).slots, 100)
+  eq(stripData([], new Date(at('2026-10-25', 12))).ticks.map((t) => t.slot), [28, 52, 76])
+})
+
+check('strip: one scale, at least 1 mm', () => {
+  const d = '2026-11-18'
+  const wet = stripData([{ t: at(d, 3), v: 2.4 }], new Date(at(d, 9)))
+  const dry = stripData([{ t: at(d, 3), v: 0.2 }], new Date(at(d, 9)))
+  eq(stripTop([wet, dry, undefined]), 2.4)
+  eq(stripTop([dry]), 1)
+})
+
+check('strip share sentence', () => {
+  eq(stripSentence('RG4', 8, at('2026-11-18', 21)), 'Rain in each 15 minutes on Wednesday November 18th at the eight gauges nearest RG4, from Rainfaller.')
 })
 
 console.log(`${passed} passed, ${failed} failed`)

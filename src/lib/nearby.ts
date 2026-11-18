@@ -4,6 +4,7 @@
 import type { CmpRow } from './compare.ts'
 import type { Gauge } from './load.ts'
 import type { GaugeFigures } from './rain.ts'
+import type { StripData } from './strip.ts'
 
 export const SHOWN = 8
 /** Gauges asked for: a few more than shown, so a gauge that has gone quiet can be passed over. */
@@ -13,7 +14,7 @@ export const QUIET = 24 * 60 * 60_000
 /** A gauge this far behind the newest reading is shown in grey as running late. */
 export const LATE = 60 * 60_000
 
-export type Row = { gauge: Gauge; miles: number; dir: string; status: 'loading' | 'failed' | 'done'; fig?: GaugeFigures }
+export type Row = { gauge: Gauge; miles: number; dir: string; status: 'loading' | 'failed' | 'done'; fig?: GaugeFigures; strip?: StripData }
 
 /** The nearest eight that are reporting: a gauge whose readings arrived but have nothing in the last day gives way to
  *  the next nearest. One still loading or failed keeps its place. */

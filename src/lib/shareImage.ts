@@ -4,6 +4,7 @@
 // computer it's copied (or saved, where the browser won't copy). Nothing is sent anywhere until the visitor chooses.
 import { oneDecimal } from './format.ts'
 import { chartScale, type CmpPlace } from './compare.ts'
+import type { StripData } from './strip.ts'
 
 /** The light colours (organic.css), and the two places' colours (checked for colour-blind readers). */
 const C = { bg: '#f5ead8', text: '#201e1d', muted: '#645c50', accent: '#c67139', line: 'rgba(32,30,29,0.2)', late: '#b9ab95' }
@@ -192,4 +193,107 @@ export async function deliver(canvas: HTMLCanvasElement, filename: string, words
     save(await blob, filename)
     return 'saved'
   }
+}
+
+export type StripRow = { name: string; today: number | null; late: boolean; failed: boolean; strip?: StripData }
+export type StripPicture = { code: string; place: string | null; when: string; rows: StripRow[]; top: number; credit: string }
+
+/** "Share charts" under a place's gauges (John, November 18th 2026): each gauge's 15-minute readings today, on the page's
+ *  one scale, with today's total. Same frame and colours as the comparison picture. */
+export function stripImage(o: StripPicture, phone = phoneShaped()): HTMLCanvasElement {
+  const W = phone ? 720 : 1200
+  const PAD = phone ? 36 : 50
+  const f = phone ? 1.3 : 1
+  const width = W - 2 * PAD
+  const scale = 2
+  const canvas = document.createElement('canvas')
+  const probe = canvas.getContext('2d')!
+  const font = (px: number, weight = 400) => `${weight} ${Math.round(px * f)}px ${FIG}`
+  const lineH = (px: number) => Math.round(px * f * 1.45)
+  probe.font = font(13)
+  const credit = wrap(probe, `rainfaller.baish.net · ${o.credit}`, width)
+  // On a phone each gauge's name and total sit above its strip, so the strip can run the full width.
+  const rowH = phone ? 92 : 46
+  const kickerY = 52 * f
+  const headY = kickerY + 44 * f
+  const whenY = headY + 30 * f
+  const colHeadY = whenY + 46 * f
+  const chartTop = colHeadY + 8 * f
+  const axisY = chartTop + o.rows.length * rowH + 18 * f
+  const ruleY = axisY + 30 * f
+  const H = ruleY + 24 * f + credit.length * lineH(13) + 16
+  canvas.width = W * scale
+  canvas.height = Math.round(H * scale)
+  const ctx = canvas.getContext('2d')!
+  ctx.scale(scale, scale)
+  ctx.fillStyle = C.bg
+  ctx.fillRect(0, 0, W, H)
+  ctx.fillStyle = C.accent
+  ctx.font = font(13, 600)
+  ctx.fillText('RAINFALLER · RAIN TODAY', PAD, kickerY)
+  ctx.fillStyle = C.text
+  ctx.font = `${Math.round(34 * f)}px Caprasimo, Georgia, serif`
+  ctx.fillText(fit(ctx, `${o.code}${o.place ? ` · ${o.place}` : ''}`, width), PAD, headY)
+  ctx.fillStyle = C.muted
+  ctx.font = font(17)
+  ctx.fillText(o.when, PAD, whenY)
+
+  // Columns: name, the strip, today's figure.
+  const nameW = phone ? width - 130 : 260
+  const todayW = 110
+  const sL = phone ? PAD : PAD + nameW
+  const sR = phone ? W - PAD : W - PAD - todayW - 16
+  const barH = 26 * f
+  ctx.fillStyle = C.muted
+  ctx.font = font(12, 600)
+  ctx.textAlign = 'right'
+  ctx.fillText('TODAY', W - PAD, colHeadY)
+  ctx.textAlign = 'left'
+  ctx.fillText(phone ? 'RAIN IN EACH 15 MINUTES' : 'IN EACH 15 MINUTES', phone ? PAD : sL, colHeadY)
+  let ry = chartTop
+  let slots = 96
+  let ticks: { slot: number; label: string }[] = []
+  for (const r of o.rows) {
+    ry += rowH
+    const base = ry - 4 * f
+    const textY = phone ? base - barH - 18 : base
+    ctx.fillStyle = C.text
+    ctx.font = font(15)
+    ctx.fillText(fit(ctx, r.name, nameW - 14 * f), PAD, textY)
+    if (r.strip) {
+      const s = r.strip
+      slots = s.slots
+      ticks = s.ticks
+      const x = (slot: number) => sL + (slot / s.slots) * (sR - sL)
+      ctx.fillStyle = C.line
+      ctx.fillRect(x(s.upTo), base, sR - x(s.upTo), 1)
+      ctx.fillStyle = C.muted
+      ctx.fillRect(sL, base, x(s.upTo) - sL, 1.2)
+      ctx.fillStyle = r.late ? C.late : C.accent
+      const bw = Math.max(1, ((sR - sL) / s.slots) * 0.7)
+      for (const m of s.marks) {
+        const h = Math.max(1.5, (Math.min(m.v, o.top) / o.top) * barH)
+        ctx.fillRect(x(m.slot), base - h, bw, h)
+      }
+    }
+    ctx.textAlign = 'right'
+    ctx.fillStyle = r.late || r.today === null ? C.muted : C.text
+    ctx.fillText(r.failed ? 'No readings' : r.today === null ? '–' : `${oneDecimal(r.today)} mm`, W - PAD, textY)
+    ctx.textAlign = 'left'
+  }
+  // The times under the strips.
+  ctx.fillStyle = C.muted
+  ctx.font = font(12)
+  const x = (slot: number) => sL + (slot / slots) * (sR - sL)
+  ctx.fillText('midnight', sL, axisY)
+  ctx.textAlign = 'center'
+  for (const t of ticks) ctx.fillText(t.label, x(t.slot), axisY)
+  ctx.textAlign = 'right'
+  ctx.fillText('midnight', sR, axisY)
+  ctx.textAlign = 'left'
+  ctx.strokeStyle = C.line; ctx.lineWidth = 1
+  ctx.beginPath(); ctx.moveTo(PAD, ruleY); ctx.lineTo(W - PAD, ruleY); ctx.stroke()
+  ctx.fillStyle = C.muted; ctx.font = font(13)
+  credit.forEach((t, i) => ctx.fillText(t, PAD, ruleY + 22 * f + i * lineH(13)))
+  return canvas
 }
