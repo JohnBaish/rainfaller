@@ -92,7 +92,8 @@ this time, sand when drier, none when the same, without an average or failed.
 - When the nearest gauge is more than 20 miles away, above the summary: "The
   nearest gauges are some way off, so may not reflect the rain here." (4.3).
 - In dark mode, after the line above the list: "A blue edge means wetter than the
-  fortnight's average by this time; sand, drier." (5.1).
+  fortnight's average by this time; a sandy-coloured edge means it's drier."
+  (5.1; reworded by John, November 19th 2026).
 
 **Agreed (John, November 18th 2026): a small chart of each gauge's day** (option 3 of
 the intensity mock-ups), under its Today figures: the rain in each 15 minutes from

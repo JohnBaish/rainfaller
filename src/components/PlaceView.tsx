@@ -178,7 +178,7 @@ export function PlaceView({ code, compareWith, fromLink }: { code: string; compa
       {lines.length > 0 && <div className="card roundup">{lines.map((l) => <p key={l}>{l}</p>)}</div>}
       <section className="source">
         <div className="section-head"><h3>Rain today</h3></div>
-        <p className="note gauges-intro">The {n(shown.length || SHOWN)} nearest Environment Agency rain gauges reporting, nearest first. Today is from midnight.<span className="dark-only"> A blue edge means wetter than the fortnight's average by this time; sand, drier.</span></p>
+        <p className="note gauges-intro">The {n(shown.length || SHOWN)} nearest Environment Agency rain gauges reporting, nearest first. Today is from midnight.<span className="dark-only"> A blue edge means wetter than the fortnight's average by this time; a sandy-coloured edge means it's drier.</span></p>
         <table className="table figures rf-table">
           <colgroup><col style={{ width: '34%' }} /><col style={{ width: '16%' }} /><col style={{ width: '14%' }} /><col style={{ width: '36%' }} /></colgroup>
           <thead><tr><th>Gauge</th><th>Distance</th><th>Last hour</th><th>Today</th></tr></thead>
