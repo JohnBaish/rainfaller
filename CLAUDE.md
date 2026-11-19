@@ -314,7 +314,7 @@ the copied picture read back from the clipboard, and the phone picture saved (14
 title "Rainfaller: Rain today" and the sentence in "About these figures"); checks 27 of 27, lint and build clean first. Checked live (the new code is being served); branch deleted with
 the "Delete merged branches" job (trial run, then the real run); tracker updated.
 
-### 2026-11-19 — the colour key reworded (branch `claude/dreamy-turing-g6qjsf`, not merged)
+### 2026-11-19 — the colour key reworded (straight to `main`, at John's word)
 
 **John:** the dark-mode key above the list now reads "A blue edge means wetter than the fortnight's average by this time; a
 sandy-coloured edge means it's drier." (was "…; sand, drier."). `PlaceView.tsx` and `SPEC.md`. **Verified:** checks 27 of 27,
